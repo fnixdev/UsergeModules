@@ -35,10 +35,14 @@ with tempfile.TemporaryDirectory() as tempdir:
 @userge.on_cmd(
     "song",
     about={
-        "header": "Music Downloader"
+        "header": "Music Downloader",
+        "description": "Baixe músicas usando o yt_dlp",
+        'examples': ['{tr}song link',
+                     '{tr}song nome da musica',]
         }
     )
 async def song_(message: Message):
+    """Download Songs With YTDL"""
     query = message.input_str
     if not query:
         return await message.edit("`Vou baixar o vento?!`", del_in=5)
@@ -83,10 +87,14 @@ async def song_(message: Message):
 @userge.on_cmd(
     "video",
     about={
-        "header": "Video Downloader"
+        "header": "Video Downloader",
+        "description": "Baixe videos usando o yt_dlp",
+        'examples': ['{tr}video link',
+                     '{tr}video nome do video',]
         }
     )
 async def vid_(message: Message):
+    """Download Videos With YTDL"""
     query = message.input_str
     if not query:
         return await message.edit("`Vou baixar o vento?!`", del_in=5)

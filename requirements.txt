@@ -1,0 +1,3 @@
+telegraph
+yt-dlp
+youtube-search-python
