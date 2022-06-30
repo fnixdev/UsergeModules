@@ -8,6 +8,8 @@
 # API: https://www.last.fm/api
 
 import aiohttp
+
+from pyrogram.enums import ParseMode
 from userge import config, Message, userge
 from userge.utils import get_response
 from .. import lastfm
@@ -62,7 +64,7 @@ async def last_fm_pic_(message: Message):
     get_track = view_data_["track"]
     get_scrob = int(get_track["userplaycount"]) + 1
     scrobbler_ = f"\n\n<b>🎵 {get_scrob} Scrobbles</b>"
-    await message.edit(f"<a href={image}>\u200c</a>" + rep + scrobbler_, parse_mode="html")
+    await message.edit(f"<a href={image}>\u200c</a>" + rep + scrobbler_, parse_mode=ParseMode.HTML)
 
 
 @userge.on_cmd(
@@ -112,7 +114,7 @@ async def last_fm_user_info_(message: Message):
         result += f" ▶️ <b>Playlists:</b> {playlist}\n"
     if subscriber != "0":
         result += f" ⭐️ <b>Subscriber:</b> {subscriber}"
-    await message.edit(result, parse_mode="html")
+    await message.edit(result, parse_mode=ParseMode.HTML)
 
 
 @userge.on_cmd(
@@ -148,7 +150,7 @@ async def last_fm_loved_tracks_(message: Message):
         song_name = song_["name"]
         artist_name = song_["artist"]["name"]
         rep += f"\n{count:02d}. 🎧  <b><a href={song_['url']}>{song_name}</a></b> - <a href={song_['artist']['url']}>{artist_name}</a>"
-    await message.edit(rep, disable_web_page_preview=True, parse_mode="html")
+    await message.edit(rep, disable_web_page_preview=True, parse_mode=ParseMode.HTML)
 
 
 @userge.on_cmd(
@@ -188,7 +190,7 @@ async def last_fm_played_(message: Message):
         rep += f"\n{count:02d}. 🎧  <b><a href={song_['url']}>{song_name}</a></b> - <a href={song_['artist']['url']}>{artist_name}</a>"
         if song_["loved"] != "0":
             rep += " ♥️"
-    await message.edit(rep, disable_web_page_preview=True, parse_mode="html")
+    await message.edit(rep, disable_web_page_preview=True, parse_mode=ParseMode.HTML)
 
 
 # The code i am using at the moment, this might work as it is, feel free to edit as per bot's use
