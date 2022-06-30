@@ -18,7 +18,7 @@ API = "http://ws.audioscrobbler.com/2.0"
 
 
 @userge.on_cmd(
-    "(lastfm|lt)",
+    "lt",
     about={"header": "Mostra o que você esta ouvindo no momento"},
 )
 async def last_fm_pic_(message: Message):
