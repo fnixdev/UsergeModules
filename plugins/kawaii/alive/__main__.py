@@ -20,9 +20,7 @@ async def _init():
     link = await SAVED.find_one({"_id": "ALIVE_MEDIA"})
     if link:
         ALIVE_MEDIA = link["link"]
-    _AliveMsg = await SAVED.find_one({"_id": "CUSTOM_MSG"})
-    if _AliveMsg:
-        ALIVE_MSG = _AliveMsg["data"]
+
 
 def _get_mode() -> str:
     if userge.dual_mode:
@@ -61,29 +59,6 @@ async def ani_save_media_alive(message: Message):
 
 
 @userge.on_cmd(
-    "setamsg",
-    about={
-        "header": "Define uma mensagem para alive",
-        "description": "Voçê pode definir uma mensagem para aparecer em seu Alive",
-    },
-)
-async def save_msg_alive(message: Message):
-    """set alive msg"""
-    rep = message.input_or_reply_raw
-    if not rep:
-        return await message.edit("`Você precisa digitar ou responder a uma mensagem pra salva-la`", del_in=6)
-    if len(rep) > 500:
-        return await message.edit("`Essa mensagem é muito longa, o limite é de 500 caracteres.`", del_in=5)
-    try:
-        await SAVED.update_one(
-            {"_id": "ALIVE_MSG"}, {"$set": {"data": rep}}, upsert=True
-        )
-        await message.edit("`Mensagem para alive definida com sucesso!`", del_in=5, log=True)
-    except Exception as e:
-        await message.err(f"Invalid Syntax\n\n`{e}`")
-
-
-@userge.on_cmd(
     "alive",
     about={
         "header": "Alive apenas",
@@ -117,24 +92,6 @@ async def view_del_ani(message: Message):
             chat_id=message.chat.id, photo=media, caption=alive_msg
         )
     await message.delete()
-
-
-@userge.on_cmd(
-    "delamsg",
-    about={
-        "header": "Delete alive message",
-        "description": "Retorna a mensagem de Alive「 para o padrão",
-      },
-)
-async def del_a_msg(message: Message):
-    """del msg alive"""
-    _findamsg = await SAVED.find_one({"_id": "ALIVE_MSG"})
-    if _findamsg is None:
-        await message.edit("`Você ainda não definiu uma mensagem para Alive`", del_in=5)
-    else:
-        await SAVED.find_one_and_delete({"_id": "ALIVE_MSG"})
-        await message.edit("`Alive msg excluida`", del_in=5, log=True)
- 
 
 
 async def upload_media_(message: Message):
