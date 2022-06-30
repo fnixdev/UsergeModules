@@ -7,6 +7,8 @@ import random
 
 from telegraph import upload_file
 from userge import Message, get_collection, userge, versions as ver, config
+from userge.utils import progress
+from userge.config import Dynamic
 
 _T_LIMIT = 5242880
 
@@ -165,7 +167,7 @@ async def upload_media_(message: Message):
     await message.edit("`processando...`")
     dl_loc = await message.client.download_media(
         message=message.reply_to_message,
-        file_name=Config.DOWN_PATH,
+        file_name=Dynamic.DOWN_PATH,
         progress=progress,
         progress_args=(message, "tentando fazer download"),
     )
