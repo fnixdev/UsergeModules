@@ -3,10 +3,10 @@
 # ==
 
 import os
+import random
 
 from telegraph import upload_file
-from userge import Message, get_collection, userge, get_version, config
-from userge.utils import rand_array
+from userge import Message, get_collection, userge, versions as ver, config
 from userge.versions import __python_version__
 
 
@@ -97,7 +97,7 @@ async def view_del_ani(message: Message):
     else:
         media = _findpma.get("link")
     if _findamsg is None:
-        mmsg = rand_array(FRASES)
+        mmsg = random.choice(FRASES)
     else:
         mmsg = _findamsg.get("data")
     msg = "ᴏɪ ᴍᴇsᴛʀᴇ, ᴋᴀɴɴᴀx ɪ'ᴛs ᴀʟɪᴠᴇ"
@@ -108,8 +108,8 @@ async def view_del_ani(message: Message):
 
 • **Modo** :  `{_get_mode()}`
 • **Uptime**  :  `{userge.uptime}`
-• **Bot Version**  :  `v{get_version()}`
-• **Python Version**  :  `v{__python_version__}`
+• **Bot Version**  :  `v{ver.__loader_version__}`
+• **Python Version**  :  `v{ver.__python_version__}`
 
     ✨ [sᴜᴘᴏʀᴛᴇ ](https://t.me/fnixsup) | 👾 [ʀᴇᴘᴏ](https://github.com/fnixdev/Kanna-X)
 """
