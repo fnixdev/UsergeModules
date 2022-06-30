@@ -5,11 +5,9 @@
 import os
 import random
 
-from telegraph import upload_file
 from userge import Message, get_collection, userge, versions as ver, config
-from userge.utils import progress
+from userge.utils import progress, upload_media_tg
 
-_T_LIMIT = 5242880
 
 SAVED = get_collection("ALIVE_DB")
 
@@ -50,7 +48,7 @@ async def ani_save_media_alive(message: Message):
     replied = message.reply_to_message
     if not replied:
         return await message.err("`Responda a uma foto/gif/video para definir uma Alive Media.`")
-    link_ = await upload_media_(message)
+    link_ = await upload_media_tg(message)
     media = f"https://telegra.ph{link_}"
     await SAVED.update_one(
             {"_id": "ALIVE_MEDIA"}, {"$set": {"link": media}}, upsert=True
@@ -94,41 +92,7 @@ async def view_del_ani(message: Message):
     await message.delete()
 
 
-async def upload_media_(message: Message):
-    replied = message.reply_to_message
-    if not (
-        (replied.photo and replied.photo.file_size <= _T_LIMIT)
-        or (replied.animation and replied.animation.file_size <= _T_LIMIT)
-        or (
-            replied.video
-            and replied.video.file_name.endswith((".mp4", ".mkv"))
-            and replied.video.file_size <= _T_LIMIT
-        )
-        or (
-            replied.document
-            and replied.document.file_name.endswith(
-                (".jpg", ".jpeg", ".png", ".gif", ".mp4", ".mkv")
-            )
-            and replied.document.file_size <= _T_LIMIT
-        )
-    ):
-        await message.err("not supported!")
-        return
-    await message.edit("`processando...`")
-    dl_loc = await message.client.download_media(
-        message=message.reply_to_message,
-        file_name=config.Dynamic.DOWN_PATH,
-        progress=progress,
-        progress_args=(message, "tentando fazer download"),
-    )
-    await message.edit("`fazendo upload no telegraph...`")
-    try:
-        response = upload_file(dl_loc)
-    except Exception as t_e:
-        await message.err(t_e)
-        return
-    os.remove(dl_loc)
-    return str(response[0])
+
 
 FRASES = (
     "ʟᴇᴍʙʀᴇ-sᴇ ᴅᴀ ʟɪᴄ̧ᴀ̃ᴏ ᴇ ɴᴀ̃ᴏ ᴅᴀ ᴅᴇᴄᴇᴘᴄ̧ᴀ̃ᴏ.",

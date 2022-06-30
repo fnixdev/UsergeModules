@@ -1,12 +1,10 @@
 """ kang stickers """
 
-# Copyright (C) 2020-2022 by UsergeTeam@Github, < https://github.com/UsergeTeam >.
+## == Modules Userge by fnix
 #
-# This file is part of < https://github.com/UsergeTeam/Userge > project,
-# and is released under the "GNU v3.0 License Agreement".
-# Please see < https://github.com/UsergeTeam/Userge/blob/master/LICENSE >
+# = All copyrights to UsergeTeam
 #
-# All rights reserved.
+# ==
 
 import os
 import random
@@ -116,8 +114,8 @@ async def kang_(message: Message):
     else:
         u_name = user.first_name or user.id
 
-    packname = f"a{user.id}_by_userge_{pack}"
-    custom_packnick = kang.CUSTOM_PACK_NAME or f"{u_name}'s Kang Pack"
+    packname = f"a{user.id}_by_x_{pack}"
+    custom_packnick = kang.CUSTOM_PACK_NAME or f"{u_name}'s kang pack"
     packnick = f"{custom_packnick} Vol.{pack}"
 
     if resize:
