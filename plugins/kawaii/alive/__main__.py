@@ -92,25 +92,19 @@ async def save_msg_alive(message: Message):
 async def view_del_ani(message: Message):
     """new alive"""
     _findpma = await SAVED.find_one({"_id": "ALIVE_MEDIA"})
-    _findamsg = await SAVED.find_one({"_id": "ALIVE_MSG"})
     if _findpma is None:
         media = "https://telegra.ph/file/d50793d9b5b1efaff09dc.gif"
     else:
         media = _findpma.get("link")
-    if _findamsg is None:
-        mmsg = random.choice(FRASES)
-    else:
-        mmsg = _findamsg.get("data")
     alive_msg = f"""
-{mmsg}
-╭────ꕥ Hilzu ꕥ────
-│✾ **𝚖𝚘𝚍𝚎** :  `{_get_mode()}`
-│✾ **𝚞𝚙𝚝𝚒𝚖𝚎**  :  `{userge.uptime}`
-│✾ **𝙷𝚒𝚕𝚣𝚞 𝚅𝚎𝚛𝚜𝚒𝚘𝚗**  :  `v{ver.__hilzu_version__}`
-│✾ **𝙿𝚢𝚝𝚑𝚘𝚗 𝚅𝚎𝚛𝚜𝚒𝚘𝚗**  :  `v{ver.__python_version__}`
+╭────────ꕥ Hilzu ꕥ────────
+│✾ 𝚖𝚘𝚍𝚎 :  `{_get_mode()}`
+│✾ 𝚞𝚙𝚝𝚒𝚖𝚎  :  `{userge.uptime}`
+│✾ 𝙷𝚒𝚕𝚣𝚞 𝚅𝚎𝚛𝚜𝚒𝚘𝚗  :  `v{ver.__hilzu_version__}`
+│✾ 𝙿𝚢𝚝𝚑𝚘𝚗 𝚅𝚎𝚛𝚜𝚒𝚘𝚗  :  `v{ver.__python_version__}`
 ╰❑
 
-    💎 [𝚛𝚎𝚙𝚘](https://github.com/fnixdev/Hilzu) | ✨ [𝚜𝚞𝚙𝚙𝚘𝚛𝚝 ](https://t.me/fnixsup)
+    ✾ [𝚛𝚎𝚙𝚘](https://github.com/fnixdev/Hilzu) | ✾ [𝚜𝚞𝚙𝚙𝚘𝚛𝚝 ](https://t.me/fnixsup)
 """
     if media.endswith((".gif", ".mp4")):
         await message.client.send_animation(
