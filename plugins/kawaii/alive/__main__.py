@@ -7,8 +7,8 @@ import random
 
 from telegraph import upload_file
 from userge import Message, get_collection, userge, versions as ver, config
-from userge.versions import __python_version__
 
+_T_LIMIT = 5242880
 
 SAVED = get_collection("ALIVE_DB")
 
@@ -93,25 +93,23 @@ async def view_del_ani(message: Message):
     _findpma = await SAVED.find_one({"_id": "ALIVE_MEDIA"})
     _findamsg = await SAVED.find_one({"_id": "ALIVE_MSG"})
     if _findpma is None:
-        media = "https://telegra.ph/file/8bfc66ff423f8263f8ca4.png"
+        media = "https://telegra.ph/file/d50793d9b5b1efaff09dc.gif"
     else:
         media = _findpma.get("link")
     if _findamsg is None:
         mmsg = random.choice(FRASES)
     else:
         mmsg = _findamsg.get("data")
-    msg = "ᴏɪ ᴍᴇsᴛʀᴇ, ᴋᴀɴɴᴀx ɪ'ᴛs ᴀʟɪᴠᴇ"
     alive_msg = f"""
-{msg}
-
 {mmsg}
+╭────ꕥ Hilzu ꕥ────
+│✾ **𝚖𝚘𝚍𝚎** :  `{_get_mode()}`
+│✾ **𝚞𝚙𝚝𝚒𝚖𝚎**  :  `{userge.uptime}`
+│✾ **𝙷𝚒𝚕𝚣𝚞 𝚅𝚎𝚛𝚜𝚒𝚘𝚗**  :  `v{ver.__hilzu_version__}`
+│✾ **𝙿𝚢𝚝𝚑𝚘𝚗 𝚅𝚎𝚛𝚜𝚒𝚘𝚗**  :  `v{ver.__python_version__}`
+╰❑
 
-• **Modo** :  `{_get_mode()}`
-• **Uptime**  :  `{userge.uptime}`
-• **Bot Version**  :  `v{ver.__loader_version__}`
-• **Python Version**  :  `v{ver.__python_version__}`
-
-    ✨ [sᴜᴘᴏʀᴛᴇ ](https://t.me/fnixsup) | 👾 [ʀᴇᴘᴏ](https://github.com/fnixdev/Kanna-X)
+    💎 [𝚛𝚎𝚙𝚘](https://github.com/fnixdev/Hilzu) | ✨ [𝚜𝚞𝚙𝚙𝚘𝚛𝚝 ](https://t.me/fnixsup)
 """
     if media.endswith((".gif", ".mp4")):
         await message.client.send_animation(
