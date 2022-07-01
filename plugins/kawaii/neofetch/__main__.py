@@ -42,52 +42,76 @@ async def neofetch_(message: Message):
 
 async def neo_image():
     neofetch = (await runcmd("neofetch --stdout"))[0]
-    font_color = (255, 42, 38)  # Red
-    before_color = (255, 255, 255)
-    if "Debian" in neofetch:
-        base_pic = "https://telegra.ph/file/1f62cbef3fe8e24afc6f7.jpg"
-    elif "Kali" in neofetch:
-        base_pic = "https://i.imgur.com/iBJxExq.jpg"
-        font_color = (87, 157, 255)  # Blue
-    else:
-        base_pic = "https://telegra.ph/file/f3191b7ecdf13867788c2.jpg"
-    font_url = (
-        "https://raw.githubusercontent.com/code-rgb/AmongUs/master/FiraCode-Regular.ttf"
-    )
+    font_url = ("https://raw.githubusercontent.com/code-rgb/AmongUs/master/FiraCode-Regular.ttf")
     me = await userge.get_me()
     fnix = [838926101]
+
+    # only for fnix
     if me.id in fnix:
         base_pic = "https://telegra.ph/file/4561b1d8e3af7e032b38c.png"
         before_color = (0, 0, 0) # Black
         font_color = (4, 123, 108) # Cyan
-    photo = Image.open(BytesIO(get(base_pic).content))
-    drawing = ImageDraw.Draw(photo)
-    font = ImageFont.truetype(BytesIO(get(font_url).content), 14)
-    x = 0
-    y = 0
-    for u_text in neofetch.splitlines():
-        if ":" in u_text:
-            ms = u_text.split(":", 1)
-            drawing.text(
-                xy=(295, 45 + x),
-                text=ms[0] + ":",
-                font=font,
-                fill=font_color,
-            )
-            drawing.text(
-                xy=((8.5 * len(ms[0])) + 295, 45 + x), text=ms[1], font=font, fill=before_color
-            )
-        else:
-            color = font_color if y == 0 else before_color
-            drawing.text(xy=(295, 53 + y), text=u_text, font=font, fill=color)
-        x += 20
-        y += 13
-    new_pic = BytesIO()
-    photo = photo.resize(photo.size, Image.ANTIALIAS)
-    if me.id in fnix:
+        photo = Image.open(BytesIO(get(base_pic).content))
+        drawing = ImageDraw.Draw(photo)
+        font = ImageFont.truetype(BytesIO(get(font_url).content), 14)
+        x = 0
+        y = 0
+        for u_text in neofetch.splitlines():
+            if ":" in u_text:
+                ms = u_text.split(":", 1)
+                drawing.text(
+                    xy=(275, 45 + x),
+                    text=ms[0] + ":",
+                    font=font,
+                    fill=font_color,
+                )
+                drawing.text(
+                    xy=((8.5 * len(ms[0])) + 275, 45 + x), text=ms[1], font=font, fill=before_color
+                )
+            else:
+                color = font_color if y == 0 else before_color
+                drawing.text(xy=(275, 53 + y), text=u_text, font=font, fill=color)
+            x += 20
+            y += 13
+        new_pic = BytesIO()
+        photo = photo.resize(photo.size, Image.ANTIALIAS)
         photo.save(new_pic, format="PNG")
         new_pic.name = "NeoFetch.png"
+        return new_pic
     else:
+        font_color = (255, 42, 38)  # Red
+        before_color = (255, 255, 255)
+        if "Debian" in neofetch:
+            base_pic = "https://telegra.ph/file/1f62cbef3fe8e24afc6f7.jpg"
+        elif "Kali" in neofetch:
+            base_pic = "https://i.imgur.com/iBJxExq.jpg"
+            font_color = (87, 157, 255)  # Blue
+        else:
+            base_pic = "https://telegra.ph/file/f3191b7ecdf13867788c2.jpg"
+        photo = Image.open(BytesIO(get(base_pic).content))
+        drawing = ImageDraw.Draw(photo)
+        font = ImageFont.truetype(BytesIO(get(font_url).content), 14)
+        x = 0
+        y = 0
+        for u_text in neofetch.splitlines():
+            if ":" in u_text:
+                ms = u_text.split(":", 1)
+                drawing.text(
+                    xy=(315, 45 + x),
+                    text=ms[0] + ":",
+                    font=font,
+                    fill=font_color,
+                )
+                drawing.text(
+                    xy=((8.5 * len(ms[0])) + 315, 45 + x), text=ms[1], font=font, fill=before_color
+                )
+            else:
+                color = font_color if y == 0 else before_color
+                drawing.text(xy=(315, 53 + y), text=u_text, font=font, fill=color)
+            x += 20
+            y += 13
+        new_pic = BytesIO()
+        photo = photo.resize(photo.size, Image.ANTIALIAS)
         photo.save(new_pic, format="JPG")
         new_pic.name = "NeoFetch.jpg"
-    return new_pic
+        return new_pic
