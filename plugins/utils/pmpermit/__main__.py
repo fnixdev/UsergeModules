@@ -29,10 +29,9 @@ ALLOWED_COLLECTION = get_collection("PM_PERMIT")
 
 pmCounter: Dict[int, int] = {}
 allowAllFilter = filters.create(lambda _, __, ___: pmpermit.Dynamic.ALLOW_ALL_PMS)
-noPmMessage = bk_noPmMessage = ("▫️ `This is  A.I Hilzu Security` ▫️\n\n"
-                                "Hello {fname} this is an automated message\n"
-                                "Please wait until you get approved to direct message "
-                                "And please dont spam until then ")
+noPmMessage = bk_noPmMessage = ("__I don't accept messages from strangers.__\n"
+                                "__Contact me in a group.__\n"
+                                "__or wait until you are approved.__")
 blocked_message = bk_blocked_message = "**You were automatically blocked**"
 
 
@@ -310,10 +309,10 @@ async def uninvitedPmHandler(message: Message):
                 )
             except (IndexError, BotInlineDisabled):
                 await message.reply(
-                    noPmMessage.format_map(SafeDict(**user_dict)) + '\n`- Protected by Hilzu Security`')
+                    noPmMessage.format_map(SafeDict(**user_dict)) + '\n\n`- Protected by A.I Hilzu Security`')
         else:
             await message.reply(
-                noPmMessage.format_map(SafeDict(**user_dict)) + '\n`- Protected by Hilzu Security`')
+                noPmMessage.format_map(SafeDict(**user_dict)) + '\n\n`- Protected by A.I Hilzu Security`')
         await asyncio.sleep(1)
         await CHANNEL.log(f"#NEW_MESSAGE\n{user_dict['mention']} has messaged you")
 
@@ -402,7 +401,7 @@ if userge.has_bot:
         else:
             user_dict = await userge.get_user_dict(c_q.from_user.id)
             await c_q.edit_message_text(
-                noPmMessage.format_map(SafeDict(**user_dict)) + '\n`- Protected by Hilzu Security`')
+                noPmMessage.format_map(SafeDict(**user_dict)) + '\n\n`- Protected by A.I Hilzu Security`')
             buttons = InlineKeyboardMarkup(
                 [
                     [
