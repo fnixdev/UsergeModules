@@ -69,17 +69,17 @@ async def neo_image():
         if ":" in u_text:
             ms = u_text.split(":", 1)
             drawing.text(
-                xy=(315, 45 + x),
+                xy=(295, 45 + x),
                 text=ms[0] + ":",
                 font=font,
                 fill=font_color,
             )
             drawing.text(
-                xy=((8.5 * len(ms[0])) + 315, 45 + x), text=ms[1], font=font, fill=before_color
+                xy=((8.5 * len(ms[0])) + 295, 45 + x), text=ms[1], font=font, fill=before_color
             )
         else:
             color = font_color if y == 0 else before_color
-            drawing.text(xy=(315, 53 + y), text=u_text, font=font, fill=color)
+            drawing.text(xy=(295, 53 + y), text=u_text, font=font, fill=color)
         x += 20
         y += 13
     new_pic = BytesIO()
