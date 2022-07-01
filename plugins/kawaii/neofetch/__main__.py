@@ -6,6 +6,7 @@
 
 from io import BytesIO
 
+from pyrogram.enums import ParseMode
 from PIL import Image, ImageDraw, ImageFont
 from requests import get
 
@@ -35,7 +36,7 @@ async def neofetch_(message: Message):
     else:
         await message.edit(
             "<code>{}</code>".format((await runcmd("neofetch --stdout"))[0]),
-            parse_mode="html",
+            parse_mode=ParseMode.HTML,
         )
 
 
