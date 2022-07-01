@@ -119,7 +119,7 @@ async def check_creds(message):
     'usage': "{tr}gpupload [link | path | reply to media]",
     'examples': [
         "{tr}gpupload downloads/img.jpg",
-        "{tr}gpupload https://imgur.com/download/Inyeb1S"]}, check_down_path=True)
+        "{tr}gpupload https://telegra.ph/file/aa2776cc8f104120d2e4a.jpg"]}, check_down_path=True)
 async def upload_google_photos(message: Message):
     creds = await check_creds(message)
     if not creds:

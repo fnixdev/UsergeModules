@@ -449,7 +449,7 @@ if userge.has_bot:
                 title="Pm Permit",
                 input_message_content=InputTextMessageContent(text),
                 description="Inline Pm Permit Handler",
-                thumb_url="https://imgur.com/download/Inyeb1S",
+                thumb_url="https://telegra.ph/file/aa2776cc8f104120d2e4a.jpg",
                 reply_markup=InlineKeyboardMarkup(buttons)
             )
         )
