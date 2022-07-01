@@ -54,6 +54,10 @@ async def neo_image():
     font_url = (
         "https://raw.githubusercontent.com/code-rgb/AmongUs/master/FiraCode-Regular.ttf"
     )
+    me = await userge.get_me()
+    fnix = [838926101]
+    if me.id in fnix:
+        base_pic = "https://telegra.ph/file/30c4502e55084c840d59b.png"
     photo = Image.open(BytesIO(get(base_pic).content))
     drawing = ImageDraw.Draw(photo)
     font = ImageFont.truetype(BytesIO(get(font_url).content), 14)
