@@ -42,7 +42,7 @@ _BANNED_USERS: List[int] = []
 _U_ID_F_M_ID: Dict[int, int] = {}
 _STATS: Dict[str, int] = {"incoming": 0, "outgoing": 0}
 
-START_TEXT = " Hello {mention}, you can contact me using this Bot."
+START_TEXT = " Hello {mention}, you can contact my master using this Bot."
 
 botPmFilter = filters.create(lambda _, __, ___: BOT_PM)
 bannedFilter = filters.create(lambda _, __, ___: ___.chat.id in _BANNED_USERS)
@@ -125,13 +125,11 @@ if userge.has_bot:
                 )
                 _USERS.append(user_id)
                 await USERS.insert_one({"user_id": user_id})
-            copy_ = "https://github.com/UsergeTeam/Userge/blob/master/LICENSE"
             markup = InlineKeyboardMarkup([
                 [
-                    InlineKeyboardButton(text="👥 UsergeTeam", url="https://github.com/UsergeTeam"),
-                    InlineKeyboardButton(text="🧪 Repo", url=botpm.UPSTREAM_REPO)
-                ],
-                [InlineKeyboardButton(text="🎖 GNU GPL v3.0", url=copy_)]
+                    InlineKeyboardButton(text="👥 KuuhakuTeam", url="https://github.com/KuuhakuTeam/"),
+                    InlineKeyboardButton(text="✨ Repo", url=botpm.UPSTREAM_REPO)
+                ]
             ])
             await send_start_text(msg, text, path, markup)
             return
