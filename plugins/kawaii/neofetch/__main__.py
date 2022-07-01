@@ -43,7 +43,7 @@ async def neofetch_(message: Message):
 async def neo_image():
     neofetch = (await runcmd("neofetch --stdout"))[0]
     font_color = (255, 42, 38)  # Red
-    white = (255, 255, 255)
+    before_color = (255, 255, 255)
     if "Debian" in neofetch:
         base_pic = "https://telegra.ph/file/1f62cbef3fe8e24afc6f7.jpg"
     elif "Kali" in neofetch:
@@ -57,7 +57,9 @@ async def neo_image():
     me = await userge.get_me()
     fnix = [838926101]
     if me.id in fnix:
-        base_pic = "https://telegra.ph/file/30c4502e55084c840d59b.png"
+        base_pic = "https://telegra.ph/file/d61161fa0513e521a0884.jpg"
+        before_color = (0, 0, 0) # Black
+        font_color = (4, 123, 108) # Cyan
     photo = Image.open(BytesIO(get(base_pic).content))
     drawing = ImageDraw.Draw(photo)
     font = ImageFont.truetype(BytesIO(get(font_url).content), 14)
@@ -73,10 +75,10 @@ async def neo_image():
                 fill=font_color,
             )
             drawing.text(
-                xy=((8.5 * len(ms[0])) + 315, 45 + x), text=ms[1], font=font, fill=white
+                xy=((8.5 * len(ms[0])) + 315, 45 + x), text=ms[1], font=font, fill=before_color
             )
         else:
-            color = font_color if y == 0 else white
+            color = font_color if y == 0 else before_color
             drawing.text(xy=(315, 53 + y), text=u_text, font=font, fill=color)
         x += 20
         y += 13
