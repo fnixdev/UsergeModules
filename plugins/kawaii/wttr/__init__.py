@@ -4,4 +4,4 @@
 #
 # ==
 
-"""weather plugin"""
+"""voicy plugin"""
