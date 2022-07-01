@@ -4,4 +4,4 @@
 #
 # ==
 
-""" setup AFK mode """
+""" anilist core """
