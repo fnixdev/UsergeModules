@@ -17,7 +17,7 @@ from userge import Message, userge
         "usage": "{tr}voicy reply audio",
     },
 )
-async def f_stat(message: Message):
+async def voice_(message: Message):
     """convert voice to text"""
     bot_ = "voicybot"
     reply = message.reply_to_message
