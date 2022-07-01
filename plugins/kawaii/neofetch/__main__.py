@@ -57,7 +57,7 @@ async def neo_image():
     me = await userge.get_me()
     fnix = [838926101]
     if me.id in fnix:
-        base_pic = "https://telegra.ph/file/d61161fa0513e521a0884.jpg"
+        base_pic = "https://telegra.ph/file/4561b1d8e3af7e032b38c.png"
         before_color = (0, 0, 0) # Black
         font_color = (4, 123, 108) # Cyan
     photo = Image.open(BytesIO(get(base_pic).content))
