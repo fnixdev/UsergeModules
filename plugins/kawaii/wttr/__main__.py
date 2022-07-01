@@ -15,7 +15,7 @@ from userge import Message, userge
 
 
 @userge.on_cmd(
-    "(w|weather)",
+    "weather",
     about={
         "header": "use this to get weather details",
         "description": "get weather info for any city",
