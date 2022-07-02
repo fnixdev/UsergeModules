@@ -121,7 +121,7 @@ async def handle_afk_incomming(message: Message) -> None:
                 f"▸ Motivo: <i>{REASON}</i>"
             )
         else:
-            afkout = rand_array(AFK_REASONS)
+            afkout = choice(AFK_REASONS)
             out_str = f"<i>{afkout}</i>"
         if TIPO == "anim":
             await message.reply_video(LINK, caption=out_str)

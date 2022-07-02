@@ -81,6 +81,6 @@ async def waifu_handler(msg: Message):
         prs_text = prs_anchor_element.text
         out_str = f"/protecc {prs_text}"
         await msg.reply_text(out_str)
-        await CHANNEL.log(f'Auto Waifu Responded in {msg.chat.title} [{msg.chat.id}]\n f"[View Message](https://t.me/c/{str(msg.chat.id)[4:]}/{msg.message_id})')
+        await CHANNEL.log(f'Auto Waifu Responded in {msg.chat.title} [{msg.chat.id}]\n f"[View Message](https://t.me/c/{str(msg.chat.id)[4:]}/{msg.id})')
     except Exception as e_x:  # pylint: disable=broad-except
         await CHANNEL.log(str(e_x))
