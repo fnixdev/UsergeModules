@@ -8,4 +8,4 @@
 
 """ Advanced YTDL """
 
-PATH = "./ytdl/ytsearch.json"
+PATH = "ytdl/ytsearch.json"
