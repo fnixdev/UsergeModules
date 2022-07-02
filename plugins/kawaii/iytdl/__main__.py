@@ -95,6 +95,7 @@ if userge.has_bot:
                 outdata = await result_formatter(resp)
                 key_ = rand_key()
                 ytsearch_data.store_(key_, outdata)
+                vid_id = outdata[1]["video_id"]
                 buttons = InlineKeyboardMarkup(
                 [
                     [
@@ -103,7 +104,7 @@ if userge.has_bot:
                     ],
                     [
                         InlineKeyboardButton(
-                            "Download", callback_data=f"yt_gen|{i['id']}")
+                            "Download", callback_data=f"yt_gen|{vid_id}")
                     ]
                 ])
                 caption = outdata[1]["message"]
