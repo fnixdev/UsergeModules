@@ -1,39 +1,37 @@
-## == Modules Userge by fnix
+# == Modules Userge by fnix
 #
 # = All copyrights to UsergeTeam
 #
 # ==
 
 import os
-import random
+
+from random import choice
+
+from pyrogram.errors import BadRequest, Forbidden
+from pyrogram import filters
+from pyrogram.types import (
+    CallbackQuery,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    InlineQuery,
+    InlineQueryResultAnimation,
+    InlineQueryResultArticle,
+    InlineQueryResultPhoto
+)
 
 from userge import Message, get_collection, userge, versions as ver, config
-from userge.utils import progress, upload_media_tg
+from userge.utils import upload_media_tg
 
 
 SAVED = get_collection("ALIVE_DB")
 
-ALIVE_MSG = {}
-
-async def _init():
-    global ALIVE_MEDIA, ALIVE_MSG  # pylint: disable=global-statement
-    link = await SAVED.find_one({"_id": "ALIVE_MEDIA"})
-    if link:
-        ALIVE_MEDIA = link["link"]
-
-
-def _get_mode() -> str:
-    if userge.dual_mode:
-        return "Dual"
-    if config.BOT_TOKEN:
-        return "Bot"
-    return "User"
 
 @userge.on_cmd(
-    "setamedia",
+    "setalive",
     about={
         "header": "Set alive media",
-        "description": "Voçê pode definir uma mídia para aparecer em seu Alive",
+        "description": "you can set custom alive media",
         "flags": {
             "-r": "reset alive media.",
         },
@@ -44,34 +42,83 @@ async def ani_save_media_alive(message: Message):
     found = await SAVED.find_one({"_id": "ALIVE_MEDIA"})
     if "-r" in message.flags:
         if not found:
-            return await message.edit("`Nenhuma Media foi definida ainda.`", del_in=5)
+            return await message.edit("`no media has been defined yet.`", del_in=5)
         await SAVED.delete_one({"_id": "ALIVE_MEDIA"})
-        return await message.edit("`Alive Media restaurada para o padrão.`", del_in=5)
+        return await message.edit("`alive media reseted.`", del_in=5)
     replied = message.reply_to_message
     if not replied:
-        return await message.err("`Responda a uma foto/gif/video para definir uma Alive Media.`")
+        return await message.err("`Reply to a photo/gif/video to set an Alive Media.`")
     link_ = await upload_media_tg(message)
     media = f"https://telegra.ph{link_}"
     await SAVED.update_one(
             {"_id": "ALIVE_MEDIA"}, {"$set": {"link": media}}, upsert=True
         )
-    await message.edit("`Alive Media definida com sucesso!`", del_in=5, log=True)
+    await message.edit("`Alive Media set successfully!`", del_in=5, log=True)
 
 
-@userge.on_cmd(
-    "alive",
-    about={
-        "header": "Alive apenas",
-    },
-)
-async def view_del_ani(message: Message):
-    """new alive"""
-    _findpma = await SAVED.find_one({"_id": "ALIVE_MEDIA"})
-    if _findpma is None:
-        media = "https://telegra.ph/file/d50793d9b5b1efaff09dc.gif"
+
+
+if userge.has_bot:
+    @userge.bot.on_inline_query(
+        filters.create(
+            lambda _, __, inline_query: (
+                inline_query.query
+                and inline_query.query.startswith("alive")
+                and inline_query.from_user
+                and inline_query.from_user.id in config.OWNER_ID
+            ),
+            name="AliveFilter"
+        ),
+        group=-1
+    )
+    async def inline_alive(_, inline_query: InlineQuery):
+        results = []
+        media = await _get_media()
+        buttons = Bot_Alive.alive_buttons()
+        alive_info = await Bot_Alive.alive_info()
+        if media.endswith((".gif", ".mp4")):
+            results.append(
+                InlineQueryResultAnimation(
+                    animation_url=media,
+                    caption=alive_info,
+                    reply_markup=buttons,
+                )
+            )
+        else:
+            results.append(
+                InlineQueryResultPhoto(
+                    photo_url=media,
+                    caption=alive_info,
+                    reply_markup=buttons,
+                )
+            )
+        await inline_query.answer(
+            results=results,
+            cache_time=5
+        )
+        inline_query.stop_propagation()
+
+async def _get_media() -> str:
+    alive_media = await SAVED.find_one({"_id": "ALIVE_MEDIA"})
+    if alive_media is None:
+        media = choice(ALIVE_DEFAULT)
     else:
-        media = _findpma.get("link")
-    alive_msg = f"""
+        media = alive_media["link"]
+    return media
+
+
+def _get_mode() -> str:
+    if userge.dual_mode:
+        return "Dual"
+    if config.BOT_TOKEN:
+        return "Bot"
+    return "User"
+
+
+class Bot_Alive:
+    @staticmethod
+    async def alive_info() -> str:
+        alive_info_ = f"""
 ╭────────ꕥ Hilzu ꕥ────────
 │✾ 𝚖𝚘𝚍𝚎 :  `{_get_mode()}`
 │✾ 𝚞𝚙𝚝𝚒𝚖𝚎  :  `{userge.uptime}`
@@ -81,15 +128,23 @@ async def view_del_ani(message: Message):
 
     ✾ [𝚛𝚎𝚙𝚘](https://github.com/fnixdev/Hilzu) | ✾ [𝚜𝚞𝚙𝚙𝚘𝚛𝚝 ](https://t.me/fnixsup)
 """
-    if media.endswith((".gif", ".mp4")):
-        await message.client.send_animation(
-            chat_id=message.chat.id,
-            animation=media,
-            caption=alive_msg
-        )
-    else:
-        await message.client.send_photo(
-            chat_id=message.chat.id, photo=media, caption=alive_msg
-        )
-    await message.delete()
+        return alive_info_
 
+    @staticmethod
+    def alive_buttons() -> InlineKeyboardMarkup:
+        buttons = [
+            [
+                InlineKeyboardButton(
+                    text="⚙️  𝚌𝚘𝚗𝚏𝚒𝚐", callback_data="settings_btn"),
+                InlineKeyboardButton(
+                    text="🦋  𝚜𝚝𝚊𝚝𝚞𝚜", callback_data="status_alive"),
+            ]
+        ]
+        return InlineKeyboardMarkup(buttons)
+
+
+ALIVE_DEFAULT = [
+    "https://telegra.ph/file/e9ee28f638a94725e17d9.gif",
+    "https://telegra.ph/file/d50793d9b5b1efaff09dc.gif",
+    "https://telegra.ph/file/fdb15844c42e0c0965375.mp4"
+]
