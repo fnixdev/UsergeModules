@@ -8,4 +8,4 @@
 
 """ Advanced YTDL """
 
-PATH = "ytdl/ytsearch.json"
+PATH = "userge/plugins/kawaii/iytdl/ytdl/ytsearch.json"
