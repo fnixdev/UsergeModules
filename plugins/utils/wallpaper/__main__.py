@@ -31,9 +31,9 @@ async def wall_(msg: Message):
                 return await msg.edit('**Result Not Found**')
             _json = results.json()['url']
             if '-doc' in msg.flags:
-                await msg.send_document(_json)
+                await msg.client.send_document(_json)
             else:
-                await msg.send_photo(_json)
+                await msg.client.send_photo(_json)
     else:
         await msg.edit('**Give me Something to search.**')
         await msg.reply_sticker('CAADAQADmQADTusQR6fPCVZ3EhDoFgQ')
