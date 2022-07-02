@@ -29,6 +29,7 @@ async def wall_(msg: Message):
             results = requests.get(f"https://kuuhaku-api-production.up.railway.app/api/wallpaper?query={qu}")
             if results.status_code != 200:
                 return await msg.edit('**Result Not Found**')
+            msg.delete()
             _json = results.json()['url']
             if '-doc' in msg.flags:
                 await msg.client.send_document(msg.chat.id, document=_json)
