@@ -5,6 +5,7 @@
 # ==
 
 import os
+import asyncio
 
 from random import choice
 
@@ -25,6 +26,22 @@ from userge.utils import upload_media_tg
 
 
 SAVED = get_collection("ALIVE_DB")
+
+
+@userge.on_cmd("alive", about={"header": "Just For Fun"}, allow_channels=False)
+async def alive_inline(message: Message):
+    try:
+        if message.client.is_bot:
+            await send_alive_message(message)
+        elif userge.has_bot:
+            try:
+                await send_inline_alive(message)
+            except BadRequest:
+                await send_alive_message(message)
+        else:
+            await send_alive_message(message)
+    except Exception as e_all:
+        await message.err(str(e_all), del_in=10, log=__name__)
 
 
 @userge.on_cmd(
@@ -54,8 +71,6 @@ async def ani_save_media_alive(message: Message):
             {"_id": "ALIVE_MEDIA"}, {"$set": {"link": media}}, upsert=True
         )
     await message.edit("`Alive Media set successfully!`", del_in=5, log=True)
-
-
 
 
 if userge.has_bot:
@@ -97,6 +112,55 @@ if userge.has_bot:
             cache_time=5
         )
         inline_query.stop_propagation()
+
+
+async def send_alive_message(message: Message) -> None:
+    global _USER_CACHED_MEDIA, _BOT_CACHED_MEDIA
+    chat_id = message.chat.id
+    client = message.client
+    caption = await Bot_Alive.alive_info()
+    if client.is_bot:
+        reply_markup = Bot_Alive.alive_buttons()
+    else:
+        reply_markup = None
+    media = await _get_media()
+    if media.endswith((".gif", ".mp4")):
+        await client.send_animation(
+            chat_id,
+            animation=media,
+            caption=caption,
+            reply_markup=reply_markup,
+        )
+    else:
+        await client.send_photo(
+            chat_id,
+            photo=media,
+            caption=caption,
+            reply_markup=reply_markup,
+        )
+
+
+async def send_inline_alive(message: Message) -> None:
+    _bot = await userge.bot.get_me()
+    try:
+        i_res = await userge.get_inline_bot_results(_bot.username, "alive")
+        i_res_id = (
+            (
+                await userge.send_inline_bot_result(
+                    chat_id=message.chat.id,
+                    query_id=i_res.query_id,
+                    result_id=i_res.results[0].id,
+                )
+            )
+            .updates[0]
+            .id
+        )
+    except (Forbidden, BadRequest) as ex:
+        await message.err(str(ex), del_in=5)
+        return
+    await message.delete()
+    await asyncio.sleep(200)
+    await userge.delete_messages(message.chat.id, i_res_id)
 
 async def _get_media() -> str:
     alive_media = await SAVED.find_one({"_id": "ALIVE_MEDIA"})
