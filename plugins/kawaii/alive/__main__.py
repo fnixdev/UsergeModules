@@ -55,7 +55,7 @@ async def alive_inline(message: Message):
         },
     },
 )
-async def ani_save_media_alive(message: Message):
+async def save_media_alive(message: Message):
     """set media alive"""
     found = await SAVED.find_one({"_id": "ALIVE_MEDIA"})
     if "-r" in message.flags:

@@ -1,15 +1,40 @@
 # == kang from https://github.com/lostb053/Userge-Plugins/tree/dev/plugins/utils/iytdl
 
 import re
-from pyrogram.types.bots_and_keyboards import reply_keyboard_markup
+import os
+import ujson
 import wget
-from uuid import uuid4
-from pyrogram import Client, filters
-from pyrogram.errors import MediaEmpty, MessageIdInvalid, MessageNotModified
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputMediaPhoto
-from userge import Message, config as Config, userge
+
 from iytdl import main
+from . import PATH
+from uuid import uuid4
+
+from pyrogram import filters
+from pyrogram.errors import MediaEmpty, MessageIdInvalid, MessageNotModified
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputMediaPhoto, InlineQuery, InlineQueryResultPhoto, InlineQueryResultArticle, InputTextMessageContent
+
+from userge import Message, config as Config, userge
 from ...builtin import sudo
+
+
+class YT_Search_X:
+    def __init__(self):
+        if not os.path.exists(PATH):
+            with open(PATH, "w") as f_x:
+                ujson.dump({}, f_x)
+        with open(PATH) as yt_db:
+            self.db = ujson.load(yt_db)
+
+    def store_(self, rnd_id: str, results: dict):
+        self.db[rnd_id] = results
+        self.save()
+
+    def save(self):
+        with open(PATH, "w") as outfile:
+            ujson.dump(self.db, outfile, indent=4)
+
+
+ytsearch_data = YT_Search_X()
 
 
 if userge.has_bot:
@@ -30,15 +55,88 @@ if userge.has_bot:
                     show_alert=True)
         return wrapper
 
-
-    ytdl = main.iYTDL(Config.LOG_CHANNEL_ID, download_path="userge/plugins/utils/iytdl/")
+    ytdl = main.iYTDL(Config.LOG_CHANNEL_ID,
+                      download_path="userge/plugins/utils/iytdl/")
 
     # https://gist.github.com/silentsokolov/f5981f314bc006c82a41
-    regex = re.compile(r'(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/(watch\?v=|embed/|v/|.+\?v=)?(?P<id>[A-Za-z0-9\-=_]{11})')
+    regex = re.compile(
+        r'(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/(watch\?v=|embed/|v/|.+\?v=)?(?P<id>[A-Za-z0-9\-=_]{11})')
     YT_DB = {}
 
     def rand_key():
         return str(uuid4())[:8]
+
+    @userge.bot.on_inline_query(
+        filters.create(
+            lambda _, __, inline_query: (
+                inline_query.query
+                and inline_query.query.startswith("ytdl ")
+                and inline_query.from_user
+                and inline_query.from_user.id in Config.OWNER_ID
+            ),
+            # https://t.me/UserGeSpam/359404
+            name="YtdlInline"
+        ),
+        group=-2
+    )
+    async def inline_iydl(_, inline_query: InlineQuery):
+        query = inline_query.query.split("ytdl ")[1].strip()
+        link = regex.match(query)
+        results = []
+        found_ = True
+        if link is None:
+            search_key = rand_key()
+            YT_DB[search_key] = query
+            search = await main.VideosSearch(query).next()
+            resp = (search.result()).get("result")
+            if len(resp) == 0:
+                found_ = False
+            else:
+                outdata = await result_formatter(resp)
+                key_ = rand_key()
+                ytsearch_data.store_(key_, outdata)
+                buttons = InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            f"1/{len(search['result'])}", callback_data=f"ytdl_scroll|{search_key}|1")
+                    ],
+                    [
+                        InlineKeyboardButton(
+                            "Download", callback_data=f"yt_gen|{i['id']}")
+                    ]
+                ])
+                caption = outdata[1]["message"]
+                photo = outdata[1]["thumb"]
+        else:
+            return
+        if found_:
+            results.append(
+                        InlineQueryResultPhoto(
+                            photo_url=photo,
+                            title=link,
+                            description="Click to Download",
+                            caption=caption,
+                            reply_markup=buttons,
+                        )
+                    )
+        else:
+            results.append(
+                        InlineQueryResultArticle(
+                            title="not Found",
+                            input_message_content=InputTextMessageContent(
+                                f"no results for `{query}`"
+                            ),
+                            description="INVALID",
+                        )
+                    )
+        await inline_query.answer(
+            results=results,
+            cache_time=5
+        )
+        inline_query.stop_propagation()
+              
+            
 
 
     @userge.on_cmd("iytdl", about={
@@ -155,3 +253,33 @@ if userge.has_bot:
                 format_ = "video"
             upload_key = await ytdl.download("https://www.youtube.com/watch?v="+key, uid, format_, cq, True, 3)
             await ytdl.upload(userge.bot, upload_key, format_, cq, True)
+
+
+
+async def result_formatter(results: list):
+    output = {}
+    for index, r in enumerate(results, start=1):
+        thumb = (r.get("thumbnails").pop()).get("url")
+        upld = r.get("channel")
+        title = f'<a href={r.get("link")}><b>{r.get("title")}</b></a>\n'
+        out = title
+        if r.get("descriptionSnippet"):
+            out += "<code>{}</code>\n\n".format(
+                "".join(x.get("text") for x in r.get("descriptionSnippet"))
+            )
+        out += f'<b>❯  Duration:</b> {r.get("accessibility").get("duration")}\n'
+        views = f'<b>❯  Views:</b> {r.get("viewCount").get("short")}\n'
+        out += views
+        out += f'<b>❯  Upload date:</b> {r.get("publishedTime")}\n'
+        if upld:
+            out += "<b>❯  Uploader:</b> "
+            out += f'<a href={upld.get("link")}>{upld.get("name")}</a>'
+        v_deo_id = r.get("id")
+        output[index] = dict(
+            message=out,
+            thumb=thumb,
+            video_id=v_deo_id,
+            list_view=f'<img src={thumb}><b><a href={r.get("link")}>{index}. {r.get("accessibility").get("title")}</a></b><br>',
+        )
+
+    return 

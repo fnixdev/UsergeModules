@@ -7,3 +7,5 @@
 # All rights reserved.
 
 """ Advanced YTDL """
+
+PATH = "./ytdl/ytsearch.json"
