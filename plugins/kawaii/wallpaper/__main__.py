@@ -49,7 +49,7 @@ async def wall_(msg: Message):
         '-l': "Limit of Wallpapers",
         '-doc': "Send as Documents (Recommended)"
     },
-    'description': 'Search and Download Hd Wallpaper from AlphaCoders and upload to Telegram',
+    'description': 'Search and Download Hd Mobile Wallpaper from AlphaCoders and upload to Telegram',
     'usage': "{tr}mwall [Query]",
     'examples': "{tr}mwall kanna"})
 async def mobile_wall_(msg: Message):
@@ -57,10 +57,10 @@ async def mobile_wall_(msg: Message):
     limit = min(int(msg.flags.get('-l', 1)), 10)
     if msg.filtered_input_str:
         qu = msg.filtered_input_str
-        await msg.edit(f"__searching wallpapers__ ... `{qu}`")
+        await msg.edit(f"__searching mobile wallpapers__ ... `{qu}`")
         await msg.delete()
         for i in range(limit):
-            results = requests.get(f"https://kuuhaku-api-production.up.railway.app/api/wallpaper?query={qu}")
+            results = requests.get(f"https://kuuhaku-api-production.up.railway.app/api/mobilewall?query={qu}")
             if results.status_code != 200:
                 return await msg.edit('**Result Not Found**')
             if "error" in results.json():
