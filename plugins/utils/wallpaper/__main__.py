@@ -21,6 +21,7 @@ from userge import userge, Message, pool
     'usage': "{tr}wall [Query]",
     'examples': "{tr}wall kanna"})
 async def wall_(msg: Message):
+    """ Wallpaper Search """
     limit = min(int(msg.flags.get('-l', 1)), 10)
     if msg.filtered_input_str:
         qu = msg.filtered_input_str
@@ -42,7 +43,7 @@ async def wall_(msg: Message):
         await msg.reply_sticker('CAADAQADmQADTusQR6fPCVZ3EhDoFgQ')
 
 
-@userge.on_cmd("wall", about={
+@userge.on_cmd("mwall", about={
     'header': "Search Mobile Wallpaper",
     'flags': {
         '-l': "Limit of Wallpapers",
@@ -51,7 +52,8 @@ async def wall_(msg: Message):
     'description': 'Search and Download Hd Wallpaper from AlphaCoders and upload to Telegram',
     'usage': "{tr}mwall [Query]",
     'examples': "{tr}mwall kanna"})
-async def wall_(msg: Message):
+async def mobile_wall_(msg: Message):
+    """ Wallpaper Mobile Search """
     limit = min(int(msg.flags.get('-l', 1)), 10)
     if msg.filtered_input_str:
         qu = msg.filtered_input_str
