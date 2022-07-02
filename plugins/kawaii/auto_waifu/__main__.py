@@ -56,7 +56,7 @@ async def auto_waifu(msg: Message):
 
 
 @userge.on_filters(IS_ENABLED_FILTER & filters.group & filters.photo & filters.incoming
-                   & filters.user([1733263647]),  # Bot IDs
+                   & filters.user([1733263647, 1829187189]),  # Bot IDs
                    group=-1, allow_via_bot=False)
 async def waifu_handler(msg: Message):
     img = await msg.download(config.Dynamic.DOWN_PATH)
