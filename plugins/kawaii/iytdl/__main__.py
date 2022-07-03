@@ -75,6 +75,9 @@ if userge.has_bot:
             except IndexError:
                 found_ = False
             out = f"<b><a href={i['link']}>{i['title']}</a></b>"
+            title_ = i['title']
+            thumb = i["thumbnails"][1 if len(
+                        i["thumbnails"]) > 1 else 0]["url"].split("?")[0]
             btn = InlineKeyboardMarkup(
                 [
                     [
@@ -88,14 +91,20 @@ if userge.has_bot:
                 ]
             )
         else:
-            found_ = False
+            key = match.group("id")
+            x = await main.Extractor().get_download_button(key)
+            rand = rand_key()
+            img = wget.download(x.image_url, out=f"{rand}.png")
+            title_ = x.title
+            thumb = f"{rand}.png"
+            btn = x.buttons
+            out = x.caption
         if found_:
             results.append(
                 InlineQueryResultPhoto(
-                    photo_url=i["thumbnails"][1 if len(
-                        i["thumbnails"]) > 1 else 0]["url"].split("?")[0],
-                    title=i['title'],
-                    description="⬇️ Clique para fazer o download",
+                    photo_url=thumb,
+                    title=title_,
+                    description="click to download",
                     caption=out,
                     reply_markup=btn,
                 )
