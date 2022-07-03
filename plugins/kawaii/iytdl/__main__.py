@@ -44,7 +44,10 @@ async def iytdl_ub_cmd(m: Message):
             search_key = rand_key()
             YT_DB[search_key] = query
             search = await main.VideosSearch(query).next()
-            i = search['result'][0]
+            try:
+                i = search['result'][0]
+            except IndexError:
+                return await m.err("No results found", del_in=5)
             out = f"<b><a href={i['link']}>{i['title']}</a></b>"
             btn = InlineKeyboardMarkup(
                 [
