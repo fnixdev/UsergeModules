@@ -60,7 +60,7 @@ async def iytdl_ub_cmd(m: Message):
                     ]
                 )
             except IndexError:
-                return await m.err("No results found", del_in=5)
+                return await m.err(f"No result found for `{query}`", del_in=5)
             try:
                 await userge.bot.send_photo(m.chat.id,
                                             i["thumbnails"][1 if len(i["thumbnails"]) > 1 else 0]["url"].split("?")[
@@ -101,7 +101,7 @@ if userge.has_bot:
             else:
                 user_dict = await userge.bot.get_user_dict(Config.OWNER_ID[0])
                 await c_q.answer(
-                    f"Only {user_dict['flname']} Can Access this...! Build Your Own @TheUserge 🤘",
+                    f"Only {user_dict['flname']} Can Access this...! Build Your Own @fnixsup 🤘",
                     show_alert=True)
         return wrapper
 
@@ -169,7 +169,7 @@ if userge.has_bot:
                 InlineQueryResultArticle(
                     title="not Found",
                     input_message_content=InputTextMessageContent(
-                        f"Nenhum resultado encontrado para `{query}`"
+                        f"No result found for `{query}`"
                     ),
                     description="INVALID",
                 )
