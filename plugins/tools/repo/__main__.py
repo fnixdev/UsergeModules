@@ -7,7 +7,6 @@
 # ==
 
 from userge import userge, Message, versions
-
 from . import *
 
 
@@ -20,4 +19,4 @@ async def see_repo(message: Message):
 ✾ 𝙻𝚘𝚊𝚍𝚎𝚛 𝚁𝚎𝚙𝚘 : [Loader]({LOADER})
 ✾ 𝙼𝚘𝚍𝚞𝚕𝚎𝚜 𝚁𝚎𝚙𝚘 : [Modules]({MODULES})
 """
-    await message.edit(output)
+    await message.edit(output, disable_web_page_preview=True)

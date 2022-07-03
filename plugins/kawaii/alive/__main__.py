@@ -18,7 +18,6 @@ from pyrogram.types import (
     InlineKeyboardMarkup,
     InlineQuery,
     InlineQueryResultAnimation,
-    InlineQueryResultArticle,
     InlineQueryResultPhoto
 )
 
@@ -69,8 +68,8 @@ async def save_media_alive(message: Message):
     link_ = await upload_media_tg(message)
     media = f"https://telegra.ph{link_}"
     await SAVED.update_one(
-            {"_id": "ALIVE_MEDIA"}, {"$set": {"link": media}}, upsert=True
-        )
+        {"_id": "ALIVE_MEDIA"}, {"$set": {"link": media}}, upsert=True
+    )
     await message.edit("`Alive Media set successfully!`", del_in=5, log=True)
 
 
@@ -80,7 +79,6 @@ if userge.has_bot:
     async def status_alive_(_, c_q: CallbackQuery):
         msg = choice(FRASES)
         await c_q.answer(msg, show_alert=True)
-
 
     @userge.bot.on_inline_query(
         filters.create(
@@ -168,6 +166,7 @@ async def send_inline_alive(message: Message) -> None:
     await message.delete()
     await asyncio.sleep(200)
     await userge.delete_messages(message.chat.id, i_res_id)
+
 
 async def _get_media() -> str:
     alive_media = await SAVED.find_one({"_id": "ALIVE_MEDIA"})
