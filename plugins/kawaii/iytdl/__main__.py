@@ -1,13 +1,10 @@
 # == kang from https://github.com/lostb053/Userge-Plugins/tree/dev/plugins/utils/iytdl
 
 import re
-import os
-import json
 import wget
 
 from iytdl import main
 from uuid import uuid4
-from re import compile as comp_regex
 
 from pyrogram import filters
 from pyrogram.errors import MediaEmpty, MessageIdInvalid, MessageNotModified
