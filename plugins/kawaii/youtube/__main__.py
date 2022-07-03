@@ -21,7 +21,6 @@ YOUTUBE_REGEX = comp_regex(
     r"(?:youtube\.com|youtu\.be)/(?:[\w-]+\?v=|embed/|v/|shorts/)?([\w-]{11})"
 )
 def get_yt_video_id(url: str):
-    # https://regex101.com/r/c06cbV/1
     match = YOUTUBE_REGEX.search(url)
     if match:
         return match.group(1)
@@ -127,6 +126,8 @@ async def vid_(message: Message):
         os.remove(Path(_fpath))
     else:
         await message.edit(str(filename_))
+
+
 
 
 # retunr regex link or get link with query
