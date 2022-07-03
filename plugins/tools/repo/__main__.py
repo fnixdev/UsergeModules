@@ -8,15 +8,16 @@
 
 from userge import userge, Message, versions
 
-from . import UPSTREAM_REPO, LOADER
+from . import *
 
 
 @userge.on_cmd("repo", about={'header': "get repo link and details"})
 async def see_repo(message: Message):
     """see repo"""
     output = f"""
-• **hilzu version** : `{versions.__hilzu_version__}`
-• **core repo** : [Hilzu]({UPSTREAM_REPO})
-• **loader repo** : [Loader]({LOADER})
+✾ 𝙷𝚒𝚕𝚣𝚞 𝚅𝚎𝚛𝚜𝚒𝚘𝚗 : `{versions.__hilzu_version__}`
+✾ 𝙲𝚘𝚛𝚎 𝚁𝚎𝚙𝚘 : [Hilzu]({UPSTREAM_REPO})
+✾ 𝙻𝚘𝚊𝚍𝚎𝚛 𝚁𝚎𝚙𝚘 : [Loader]({LOADER})
+✾ 𝙼𝚘𝚍𝚞𝚕𝚎𝚜 𝚁𝚎𝚙𝚘 : [Modules]({MODULES})
 """
     await message.edit(output)
