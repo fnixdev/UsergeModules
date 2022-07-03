@@ -150,7 +150,7 @@ if userge.has_bot:
             x = await main.Extractor().get_download_button(key)
             rand = rand_key()
             img = wget.download(x.image_url, out=f"{rand}.png")
-            await userge.bot.reply_photo(f"{rand}.png", caption=x.caption, reply_markup=x.buttons)
+            await userge.bot.send_photo(m.chat.id, photo=f"{rand}.png", caption=x.caption, reply_markup=x.buttons)
 
     @userge.bot.on_callback_query(filters=filters.regex(pattern=r"ytdl_scroll\|(.*)"))
     @check_owner
