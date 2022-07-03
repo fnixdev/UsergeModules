@@ -2,19 +2,22 @@
 
 import re
 import os
-import ujson
+import json
 import wget
 
 from iytdl import main
-from . import PATH
 from uuid import uuid4
+from re import compile as comp_regex
 
 from pyrogram import filters
 from pyrogram.errors import MediaEmpty, MessageIdInvalid, MessageNotModified
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputMediaPhoto, InlineQuery, InlineQueryResultPhoto, InlineQueryResultArticle, InputTextMessageContent
 
 from userge import Message, config as Config, userge
+from userge.utils import get_response
 from ...builtin import sudo
+
+YOUTUBE_REGEX = comp_regex(r"(?:youtube\.com|youtu\.be)/(?:[\w-]+\?v=|embed/|v/|shorts/)?([\w-]{11})")
 
 
 if userge.has_bot:
@@ -67,7 +70,10 @@ if userge.has_bot:
             search_key = rand_key()
             YT_DB[search_key] = query
             search = await main.VideosSearch(query).next()
-            i = search['result'][0]
+            try:
+                i = search['result'][0]
+            except IndexError:
+                found_ = False
             out = f"<b><a href={i['link']}>{i['title']}</a></b>"
             btn = InlineKeyboardMarkup(
                 [
@@ -83,7 +89,6 @@ if userge.has_bot:
             )
         else:
             found_ = False
-
         if found_:
             results.append(
                 InlineQueryResultPhoto(
@@ -145,7 +150,7 @@ if userge.has_bot:
             x = await main.Extractor().get_download_button(key)
             rand = rand_key()
             img = wget.download(x.image_url, out=f"{rand}.png")
-            await m.reply_photo(f"{rand}.png", caption=x.caption, reply_markup=x.buttons)
+            await userge.bot.reply_photo(f"{rand}.png", caption=x.caption, reply_markup=x.buttons)
 
     @userge.bot.on_callback_query(filters=filters.regex(pattern=r"ytdl_scroll\|(.*)"))
     @check_owner
