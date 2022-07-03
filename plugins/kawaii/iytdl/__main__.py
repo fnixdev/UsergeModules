@@ -20,6 +20,23 @@ from ...builtin import sudo
 YOUTUBE_REGEX = comp_regex(r"(?:youtube\.com|youtu\.be)/(?:[\w-]+\?v=|embed/|v/|shorts/)?([\w-]{11})")
 
 
+async def get_ytthumb(videoid: str):
+    thumb_quality = [
+        "maxresdefault.jpg",  # Best quality
+        "hqdefault.jpg",
+        "sddefault.jpg",
+        "mqdefault.jpg",
+        "default.jpg",  # Worst quality
+    ]
+    thumb_link = "https://i.imgur.com/4LwPLai.png"
+    for qualiy in thumb_quality:
+        link = f"https://i.ytimg.com/vi/{videoid}/{qualiy}"
+        if await get_response.status(link) == 200:
+            thumb_link = link
+            break
+    return thumb_link
+
+
 if userge.has_bot:
     def check_owner(func):
         async def wrapper(_, c_q: CallbackQuery):
@@ -96,7 +113,7 @@ if userge.has_bot:
             rand = rand_key()
             img = wget.download(x.image_url, out=f"{rand}.png")
             title_ = query
-            thumb = f"{rand}.png"
+            thumb = await get_ytthumb(key)
             btn = x.buttons
             out = x.caption
         if found_:
