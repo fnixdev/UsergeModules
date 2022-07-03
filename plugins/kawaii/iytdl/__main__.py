@@ -9,7 +9,7 @@ from pyrogram import filters
 from pyrogram.errors import MessageIdInvalid, MessageNotModified
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputMediaAudio, InputMediaVideo, InlineQuery, InlineQueryResultPhoto, InlineQueryResultArticle, InputTextMessageContent
 
-from userge import Message, userge
+from userge import Message, userge, config as Config
 from userge.utils import get_response
 from ...builtin import sudo
 
