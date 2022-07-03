@@ -17,24 +17,74 @@ from userge import Message, config as Config, userge
 from userge.utils import get_response
 from ...builtin import sudo
 
-YOUTUBE_REGEX = comp_regex(r"(?:youtube\.com|youtu\.be)/(?:[\w-]+\?v=|embed/|v/|shorts/)?([\w-]{11})")
+
+YT_DB = {}
+ytdl = main.iYTDL(Config.LOG_CHANNEL_ID,
+                  download_path="userge/plugins/utils/iytdl/")
+regex = re.compile(
+    r'(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/(watch\?v=|embed/|v/|.+\?v=)?(?P<id>[A-Za-z0-9\-=_]{11})')
 
 
-async def get_ytthumb(videoid: str):
-    thumb_quality = [
-        "maxresdefault.jpg",  # Best quality
-        "hqdefault.jpg",
-        "sddefault.jpg",
-        "mqdefault.jpg",
-        "default.jpg",  # Worst quality
-    ]
-    thumb_link = "https://i.imgur.com/4LwPLai.png"
-    for qualiy in thumb_quality:
-        link = f"https://i.ytimg.com/vi/{videoid}/{qualiy}"
-        if await get_response.status(link) == 200:
-            thumb_link = link
-            break
-    return thumb_link
+@userge.on_cmd("iytdl", about={
+    'header': "Advanced YTDL",
+    'usage': "{tr}iytdl URL or Query"})
+async def iytdl_ub_cmd(m: Message):
+    reply = m.reply_to_message
+    query = None
+    if m.input_str:
+        query = m.input_str
+    elif reply:
+        if reply.text:
+            query = reply.text
+        elif reply.caption:
+            query = reply.caption
+    if not query:
+        return await m.err("Input or reply to a valid youtube URL", del_in=5)
+    await m.edit(f"🔎 Searching Youtube for: <code>'{query}'</code>")
+    if m.client.is_bot:
+        match = regex.match(query)
+        if match is None:
+            search_key = rand_key()
+            YT_DB[search_key] = query
+            search = await main.VideosSearch(query).next()
+            i = search['result'][0]
+            out = f"<b><a href={i['link']}>{i['title']}</a></b>"
+            btn = InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            f"1/{len(search['result'])}", callback_data=f"ytdl_scroll|{search_key}|1")
+                    ],
+                    [
+                        InlineKeyboardButton(
+                            "Download", callback_data=f"yt_gen|{i['id']}")
+                    ]
+                ]
+            )
+            try:
+                await userge.bot.send_photo(m.chat.id,
+                                            i["thumbnails"][1 if len(i["thumbnails"]) > 1 else 0]["url"].split("?")[
+                                                0],
+                                            caption=out,
+                                            reply_markup=btn)
+            except MediaEmpty:
+                await userge.bot.send_photo(m.chat.id,
+                                            "https://camo.githubusercontent.com/8486ea960b794cefdbbba0a8ef698d04874152c8e24b3b26adf7f50847d4a3a8/68747470733a2f2f692e696d6775722e636f6d2f51393443444b432e706e67",
+                                            caption=out,
+                                            reply_markup=btn)
+        else:
+            key = match.group("id")
+            x = await main.Extractor().get_download_button(key)
+            thumb = await get_ytthumb(key)
+            await userge.bot.send_photo(m.chat.id, photo=thumb, caption=x.caption, reply_markup=x.buttons)
+        await m.delete()
+    else:
+        bot = await userge.bot.get_me()
+        x = await userge.get_inline_bot_results(bot.username, f"ytdl {query}")
+        await m.delete()
+        await userge.send_inline_bot_result(
+            chat_id=m.chat.id, query_id=x.query_id, result_id=x.results[0].id
+        )
 
 
 if userge.has_bot:
@@ -54,16 +104,6 @@ if userge.has_bot:
                     f"Only {user_dict['flname']} Can Access this...! Build Your Own @TheUserge 🤘",
                     show_alert=True)
         return wrapper
-
-    ytdl = main.iYTDL(Config.LOG_CHANNEL_ID,
-                      download_path="userge/plugins/utils/iytdl/")
-
-    regex = re.compile(
-        r'(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/(watch\?v=|embed/|v/|.+\?v=)?(?P<id>[A-Za-z0-9\-=_]{11})')
-    YT_DB = {}
-
-    def rand_key():
-        return str(uuid4())[:8]
 
     @userge.bot.on_inline_query(
         filters.create(
@@ -94,7 +134,7 @@ if userge.has_bot:
             out = f"<b><a href={i['link']}>{i['title']}</a></b>"
             title_ = i['title']
             thumb = i["thumbnails"][1 if len(
-                        i["thumbnails"]) > 1 else 0]["url"].split("?")[0]
+                i["thumbnails"]) > 1 else 0]["url"].split("?")[0]
             btn = InlineKeyboardMarkup(
                 [
                     [
@@ -110,8 +150,6 @@ if userge.has_bot:
         else:
             key = match.group("id")
             x = await main.Extractor().get_download_button(key)
-            rand = rand_key()
-            img = wget.download(x.image_url, out=f"{rand}.png")
             title_ = query
             thumb = await get_ytthumb(key)
             btn = x.buttons
@@ -141,42 +179,6 @@ if userge.has_bot:
             cache_time=5
         )
         inline_query.stop_propagation()
-
-
-    @userge.on_cmd("iytdl", about={
-        'header': "Advanced YTDL",
-        'usage': "{tr}iytdl URL or Query"})
-    async def iytdl_ub_cmd(m: Message):
-        query = m.input_str
-        match = regex.match(query)
-        if match is None:
-            search_key = rand_key()
-            YT_DB[search_key] = query
-            search = await main.VideosSearch(query).next()
-            i = search['result'][0]
-            out = f"<b><a href={i['link']}>{i['title']}</a></b>"
-            btn = InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton(
-                            f"1/{len(search['result'])}", callback_data=f"ytdl_scroll|{search_key}|1")
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            "Download", callback_data=f"yt_gen|{i['id']}")
-                    ]
-                ]
-            )
-            try:
-                await userge.bot.send_photo(m.chat.id, i["thumbnails"][1 if len(i["thumbnails"]) > 1 else 0]["url"].split("?")[0], caption=out, reply_markup=btn)
-            except MediaEmpty:
-                await userge.bot.send_photo(m.chat.id, "https://camo.githubusercontent.com/8486ea960b794cefdbbba0a8ef698d04874152c8e24b3b26adf7f50847d4a3a8/68747470733a2f2f692e696d6775722e636f6d2f51393443444b432e706e67", caption=out, reply_markup=btn)
-        else:
-            key = match.group("id")
-            x = await main.Extractor().get_download_button(key)
-            rand = rand_key()
-            img = wget.download(x.image_url, out=f"{rand}.png")
-            await userge.bot.send_photo(m.chat.id, photo=f"{rand}.png", caption=x.caption, reply_markup=x.buttons)
 
     @userge.bot.on_callback_query(filters=filters.regex(pattern=r"ytdl_scroll\|(.*)"))
     @check_owner
@@ -247,3 +249,24 @@ if userge.has_bot:
                 format_ = "video"
             upload_key = await ytdl.download("https://www.youtube.com/watch?v="+key, uid, format_, cq, True, 3)
             await ytdl.upload(userge.bot, upload_key, format_, cq, True)
+
+
+async def get_ytthumb(videoid: str):
+    thumb_quality = [
+        "maxresdefault.jpg",  # Best quality
+        "hqdefault.jpg",
+        "sddefault.jpg",
+        "mqdefault.jpg",
+        "default.jpg",  # Worst quality
+    ]
+    thumb_link = "https://i.imgur.com/4LwPLai.png"
+    for qualiy in thumb_quality:
+        link = f"https://i.ytimg.com/vi/{videoid}/{qualiy}"
+        if await get_response.status(link) == 200:
+            thumb_link = link
+            break
+    return thumb_link
+
+
+def rand_key():
+    return str(uuid4())[:8]
