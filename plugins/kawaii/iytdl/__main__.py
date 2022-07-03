@@ -95,7 +95,7 @@ if userge.has_bot:
             x = await main.Extractor().get_download_button(key)
             rand = rand_key()
             img = wget.download(x.image_url, out=f"{rand}.png")
-            title_ = x.title
+            title_ = query
             thumb = f"{rand}.png"
             btn = x.buttons
             out = x.caption
