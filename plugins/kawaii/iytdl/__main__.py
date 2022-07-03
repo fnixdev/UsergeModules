@@ -46,21 +46,21 @@ async def iytdl_ub_cmd(m: Message):
             search = await main.VideosSearch(query).next()
             try:
                 i = search['result'][0]
+                out = f"<b><a href={i['link']}>{i['title']}</a></b>"
+                btn = InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton(
+                                f"1/{len(search['result'])}", callback_data=f"ytdl_scroll|{search_key}|1")
+                        ],
+                        [
+                            InlineKeyboardButton(
+                                "Download", callback_data=f"yt_gen|{i['id']}")
+                        ]
+                    ]
+                )
             except IndexError:
                 return await m.err("No results found", del_in=5)
-            out = f"<b><a href={i['link']}>{i['title']}</a></b>"
-            btn = InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton(
-                            f"1/{len(search['result'])}", callback_data=f"ytdl_scroll|{search_key}|1")
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            "Download", callback_data=f"yt_gen|{i['id']}")
-                    ]
-                ]
-            )
             try:
                 await userge.bot.send_photo(m.chat.id,
                                             i["thumbnails"][1 if len(i["thumbnails"]) > 1 else 0]["url"].split("?")[
@@ -129,24 +129,24 @@ if userge.has_bot:
             search = await main.VideosSearch(query).next()
             try:
                 i = search['result'][0]
+                out = f"<b><a href={i['link']}>{i['title']}</a></b>"
+                title_ = i['title']
+                thumb = i["thumbnails"][1 if len(
+                    i["thumbnails"]) > 1 else 0]["url"].split("?")[0]
+                btn = InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton(
+                                f"1/{len(search['result'])}", callback_data=f"ytdl_scroll|{search_key}|1")
+                        ],
+                        [
+                            InlineKeyboardButton(
+                                "Download", callback_data=f"yt_gen|{i['id']}")
+                        ]
+                    ]
+                )
             except IndexError:
                 found_ = False
-            out = f"<b><a href={i['link']}>{i['title']}</a></b>"
-            title_ = i['title']
-            thumb = i["thumbnails"][1 if len(
-                i["thumbnails"]) > 1 else 0]["url"].split("?")[0]
-            btn = InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton(
-                            f"1/{len(search['result'])}", callback_data=f"ytdl_scroll|{search_key}|1")
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            "Download", callback_data=f"yt_gen|{i['id']}")
-                    ]
-                ]
-            )
         else:
             key = match.group("id")
             x = await main.Extractor().get_download_button(key)
