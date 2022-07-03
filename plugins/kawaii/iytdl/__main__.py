@@ -19,9 +19,12 @@ YOUTUBE_REGEX = comp_regex(
 )
 
 
-@userge.on_cmd("iytdl", about={
-    'header': "Advanced YTDL",
-    'usage': "{tr}iytdl URL or Query"})
+@userge.on_cmd(
+    "yti",
+    about={
+        'header': "Advanced YTDL",
+        'usage': "{tr}yti URL or Query"}
+)
 async def iytdl_ub_cmd(m: Message):
     reply = m.reply_to_message
     query = None
