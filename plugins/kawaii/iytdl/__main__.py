@@ -154,7 +154,7 @@ if userge.has_bot:
         type_ = callback[1]
         id_ = callback[2]
         url_ = f"{BASE_YT}{id_}"
-        opts_ = get_opts(type_, path_)
+        opts_ = get_opts(type_, PATH)
         thumb_ = download(await get_ytthumb(id_), PATH)
         with yt_dlp.YoutubeDL(opts_) as ydl:
             inf = ydl.extract_info(url_, download=True)
