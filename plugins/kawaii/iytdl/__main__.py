@@ -49,9 +49,6 @@ async def iytdl_ub_cmd(m: Message):
         link_ = get_link(query)
         id_ = get_yt_video_id(link_)
         thumb_ = await get_ytthumb(id_)
-    except (Exception or IndexError):
-        m.err(f"No results for <code>'{query}'</code>", del_in=5)
-    if m.client.is_bot:
         btn = InlineKeyboardMarkup(
             [
                 [
@@ -62,6 +59,9 @@ async def iytdl_ub_cmd(m: Message):
                 ]
             ]
         )
+    except (Exception or IndexError):
+        m.err(f"No results for <code>'{query}'</code>", del_in=5)
+    if m.client.is_bot:
         await m.delete()
         await userge.bot.send_photo(m.chat.id, thumb_, caption=link_, reply_markup=btn)
     else:
@@ -112,18 +112,19 @@ if userge.has_bot:
             link_ = get_link(query)
             id_ = get_yt_video_id(link_)
             thumb_ = await get_ytthumb(id_)
+            btn = InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            "Video", callback_data=f"yt_down|vid|{id_}"),
+                        InlineKeyboardButton(
+                            "Audio", callback_data=f"yt_down|aud|{id_}")
+                    ]
+                ]
+            )
         except (Exception or IndexError):
             found_ = False
-        btn = InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton(
-                        "Video", callback_data=f"yt_down|aud|{id_}"),
-                    InlineKeyboardButton(
-                        "Audio", callback_data=f"yt_down|vid|{id_}")
-                ]
-            ]
-        )
+
         if found_:
             results.append(
                 InlineQueryResultPhoto(
