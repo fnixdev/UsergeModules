@@ -45,11 +45,10 @@ async def iytdl_ub_cmd(m: Message):
     if not query:
         return await m.err("Input or reply to a valid youtube URL", del_in=5)
     await m.edit(f"🔎 Searching Youtube for: <code>'{query}'</code>")
-    try:
-        link_ = get_link(query)
-        id_ = get_yt_video_id(link_)
-        thumb_ = await get_ytthumb(id_)
-        btn = InlineKeyboardMarkup(
+    link_ = get_link(query)
+    id_ = get_yt_video_id(link_)
+    thumb_ = await get_ytthumb(id_)
+    btn = InlineKeyboardMarkup(
             [
                 [
                     InlineKeyboardButton(
@@ -59,8 +58,6 @@ async def iytdl_ub_cmd(m: Message):
                 ]
             ]
         )
-    except (Exception or IndexError):
-        m.err(f"No results for <code>'{query}'</code>", del_in=5)
     if m.client.is_bot:
         await m.delete()
         await userge.bot.send_photo(m.chat.id, thumb_, caption=link_, reply_markup=btn)
@@ -108,11 +105,10 @@ if userge.has_bot:
         query = inline_query.query.split("ytdl ")[1].strip()
         results = []
         found_ = True
-        try:
-            link_ = get_link(query)
-            id_ = get_yt_video_id(link_)
-            thumb_ = await get_ytthumb(id_)
-            btn = InlineKeyboardMarkup(
+        link_ = get_link(query)
+        id_ = get_yt_video_id(link_)
+        thumb_ = await get_ytthumb(id_)
+        btn = InlineKeyboardMarkup(
                 [
                     [
                         InlineKeyboardButton(
@@ -122,9 +118,6 @@ if userge.has_bot:
                     ]
                 ]
             )
-        except (Exception or IndexError):
-            found_ = False
-
         if found_:
             results.append(
                 InlineQueryResultPhoto(
