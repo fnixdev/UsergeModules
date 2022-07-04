@@ -52,20 +52,10 @@ async def iytdl_ub_cmd(m: Message):
     link_ = get_link(query)
     id_ = get_yt_video_id(link_)
     thumb_ = await get_ytthumb(id_)
-    title_ = extract_basic(link_)
-    btn = InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton(
-                        "Video", callback_data=f"yt_down|vid|{id_}"),
-                    InlineKeyboardButton(
-                        "Audio", callback_data=f"yt_down|aud|{id_}")
-                ]
-            ]
-        )
+    x = await main.Extractor().get_download_button(id_)
     if m.client.is_bot:
         await m.delete()
-        await userge.bot.send_photo(m.chat.id, thumb_, caption=title_, reply_markup=btn)
+        await userge.bot.send_photo(m.chat.id, thumb_, caption=x.caption, reply_markup=x.buttons)
     else:
         bot = await userge.bot.get_me()
         x = await userge.get_inline_bot_results(bot.username, f"ytdl {query}")
@@ -92,6 +82,8 @@ if userge.has_bot:
                     f"Only {user_dict['flname']} Can Access this...! Build Your Own @fnixsup 🤘",
                     show_alert=True)
         return wrapper
+
+    ytdl = main.iYTDL(Config.LOG_CHANNEL_ID, download_path="userge/plugins/kawaii/iytdl/ytdl")
 
     @userge.bot.on_inline_query(
         filters.create(
@@ -141,65 +133,20 @@ if userge.has_bot:
         inline_query.stop_propagation()
 
 
-
-
-
-
-
-
-
-
-
-    @userge.bot.on_callback_query(filters=filters.regex(pattern=r"yt_down\|(.*)"))
+    @userge.bot.on_callback_query(filters=filters.regex(pattern=r"yt_dl\|(.*)"))
     @check_owner
-    async def yt_down_cb(cq: CallbackQuery):
-        await cq.edit_message_caption("`❯ Processando...`")
+    async def ytdl_gendl_callback(cq: CallbackQuery):
         callback = cq.data.split("|")
-        type_ = callback[1]
-        id_ = callback[2]
-        url_ = f"{BASE_YT}{id_}"
-        with tempfile.TemporaryDirectory() as tempdir:
-            path_ = os.path.join(tempdir, "ytdl")
-        opts_ = get_opts(type_, path_)
-        thumb_ = download(await get_ytthumb(id_), Config.Dynamic.DOWN_PATH)
-        filename_, title_, dur_ = extract_full(url_, opts_)
-        try:
-            if type_ == "vid":
-                await cq.edit_message_caption("`❯ Uploading Video ...`")
-                try:
-                    await cq.edit_message_media(
-                        media=InputMediaVideo(
-                            media=str(filename_),
-                            caption=title_,
-                            thumb=thumb_,
-                            duration=dur_
-                        )
-                    )
-                except ValueError:
-                    await cq.edit_message_media(
-                        media=InputMediaVideo(
-                            media=str(filename_).replace(".webm", ".mp4"),
-                            caption=title_,
-                            thumb=thumb_,
-                            duration=dur_
-                        )
-                    )
-                except Exception as e:
-                    return await LOGGER.exception(e)
-            else:
-                await cq.edit_message_caption("`❯ Uploading Audio ...`")
-                await cq.edit_message_media(
-                    media=InputMediaAudio(
-                        media=str(filename_).replace(".webm", ".mp3"),
-                        caption=title_,
-                        thumb=thumb_,
-                        duration=dur_
-                    )
-                )
-        except BadRequest as e:
-            return await CHANNEL.log(e)
-        shutil.rmtree(tempdir, ignore_errors=True)
-        os.remove(thumb_)
+        key = callback[1]
+        uid = callback[2]
+        type_ = callback[3]
+        if type_ == "a":
+            format_ = "audio"
+        else:
+            format_ = "video"
+        upload_key = await ytdl.download("https://www.youtube.com/watch?v="+key, uid, format_, cq, True, 3)
+        await ytdl.upload(userge.bot, upload_key, format_, cq, True)
+
 
 
 def extract_basic(link):
@@ -207,53 +154,6 @@ def extract_basic(link):
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(link, download=False)
     return f'`❯ {info["title"]}`'
-
-
-def extract_full(link: str,opts_: str):
-    with yt_dlp.YoutubeDL(opts_) as ydl:
-        inf = ydl.extract_info(link, download=True)
-        filename_ = ydl.prepare_filename(inf)
-        title_ = f'❯ {inf["title"]}'
-        dur_ = int(inf["duration"])
-        return filename_, title_, dur_
-
-
-def get_opts(type, path_):
-    if type == "aud":
-        _opts = {
-            "outtmpl": os.path.join(path_, "%(title)s.%(ext)s"),
-            "logger": LOGGER,
-            "writethumbnail": True,
-            "prefer_ffmpeg": True,
-            'format': 'bestaudio/best',
-            "geo_bypass": True,
-            "nocheckcertificate": True,
-            "postprocessors": [
-                {
-                    'key': 'FFmpegExtractAudio',
-                    'preferredcodec': "mp3",
-                    'preferredquality': '320',
-                },
-                {"key": "EmbedThumbnail"},
-                {"key": "FFmpegMetadata"},
-            ],
-            "quiet": True,
-        }
-    else:
-        _opts = {
-            "outtmpl": os.path.join(path_, "%(title)s.%(ext)s"),
-            'logger': LOGGER,
-            'writethumbnail': False,
-            'prefer_ffmpeg': True,
-            'format': 'bestvideo+bestaudio/best',
-            'postprocessors': [
-                {
-                    'key': 'FFmpegMetadata'
-                }
-            ],
-            "quiet": True,
-        }
-    return _opts
 
 
 def get_yt_video_id(url: str):
