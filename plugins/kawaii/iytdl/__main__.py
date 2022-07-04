@@ -55,6 +55,7 @@ async def iytdl_ub_cmd(m: Message):
                 ]
             ]
         )
+        await m.delete()
         await userge.bot.send_photo(m.chat.id, thumb_, caption=link_, reply_markup=btn)
     else:
         bot = await userge.bot.get_me()
