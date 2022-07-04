@@ -175,7 +175,7 @@ if userge.has_bot:
                     media=InputMediaAudio(
                         media=str(filename_).replace(".webm", ".mp3"),
                         caption=title_,
-                        thumb=await get_ytthumb(id_),
+                        thumb=thumb_,
                         duration=int(inf["duration"])
                     )
                 )
