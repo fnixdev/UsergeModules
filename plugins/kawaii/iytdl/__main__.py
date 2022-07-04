@@ -1,9 +1,11 @@
 # == kang from https://github.com/lostb053/Userge-Plugins/tree/dev/plugins/utils/iytdl
 
+from fileinput import filename
 import os
 import json
 import shutil
 import tempfile
+from numpy import extract
 import yt_dlp
 
 from wget import download
@@ -50,6 +52,7 @@ async def iytdl_ub_cmd(m: Message):
     link_ = get_link(query)
     id_ = get_yt_video_id(link_)
     thumb_ = await get_ytthumb(id_)
+    title_ = extract_basic(link_)
     btn = InlineKeyboardMarkup(
             [
                 [
@@ -62,7 +65,7 @@ async def iytdl_ub_cmd(m: Message):
         )
     if m.client.is_bot:
         await m.delete()
-        await userge.bot.send_photo(m.chat.id, thumb_, caption=link_, reply_markup=btn)
+        await userge.bot.send_photo(m.chat.id, thumb_, caption=title_, reply_markup=btn)
     else:
         bot = await userge.bot.get_me()
         x = await userge.get_inline_bot_results(bot.username, f"ytdl {query}")
@@ -110,6 +113,7 @@ if userge.has_bot:
         link_ = get_link(query)
         id_ = get_yt_video_id(link_)
         thumb_ = await get_ytthumb(id_)
+        title_ = extract_basic(link_)
         btn = InlineKeyboardMarkup(
                 [
                     [
@@ -124,9 +128,9 @@ if userge.has_bot:
             results.append(
                 InlineQueryResultPhoto(
                     photo_url=thumb_,
-                    title=link_,
+                    title=title_,
                     description="click to download",
-                    caption=link_,
+                    caption=title_,
                     reply_markup=btn,
                 )
             )
@@ -149,7 +153,7 @@ if userge.has_bot:
     @userge.bot.on_callback_query(filters=filters.regex(pattern=r"yt_down\|(.*)"))
     @check_owner
     async def yt_down_cb(cq: CallbackQuery):
-        await cq.edit_message_caption("Processando.")
+        await cq.edit_message_caption("`❯ Processando...`")
         callback = cq.data.split("|")
         type_ = callback[1]
         id_ = callback[2]
@@ -158,19 +162,17 @@ if userge.has_bot:
             path_ = os.path.join(tempdir, "ytdl")
         opts_ = get_opts(type_, path_)
         thumb_ = download(await get_ytthumb(id_), Config.Dynamic.DOWN_PATH)
-        with yt_dlp.YoutubeDL(opts_) as ydl:
-            inf = ydl.extract_info(url_, download=True)
-            filename_ = ydl.prepare_filename(inf)
-            title_ = inf["title"]
+        filename_, title_, dur_ = extract_full(url_, opts_)
         try:
             if type_ == "vid":
+                await cq.edit_message_caption("`❯ Uploading Video ...`")
                 try:
                     await cq.edit_message_media(
                         media=InputMediaVideo(
                             media=str(filename_),
                             caption=title_,
                             thumb=thumb_,
-                            duration=int(inf["duration"])
+                            duration=dur_
                         )
                     )
                 except ValueError:
@@ -179,24 +181,41 @@ if userge.has_bot:
                             media=str(filename_).replace(".webm", ".mp4"),
                             caption=title_,
                             thumb=thumb_,
-                            duration=int(inf["duration"])
+                            duration=dur_
                         )
                     )
                 except Exception as e:
                     return LOGGER.exception(e)
             else:
+                await cq.edit_message_caption("`❯ Uploading Audio ...`")
                 await cq.edit_message_media(
                     media=InputMediaAudio(
                         media=str(filename_).replace(".webm", ".mp3"),
                         caption=title_,
                         thumb=thumb_,
-                        duration=int(inf["duration"])
+                        duration=dur_
                     )
                 )
         except BadRequest as e:
             return CHANNEL.log(e)
         shutil.rmtree(tempdir, ignore_errors=True)
         os.remove(thumb_)
+
+
+def extract_basic(link):
+    ydl_opts = {}
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(link, download=False)
+    return f'❯ {info["title"]}'
+
+
+def extract_full(link: str,opts_: str):
+    with yt_dlp.YoutubeDL(opts_) as ydl:
+        inf = ydl.extract_info(link, download=True)
+        filename_ = ydl.prepare_filename(inf)
+        title_ = f'❯ {inf["title"]}'
+        dur_ = int(inf["duration"])
+        return filename_, title_, dur_
 
 
 def get_opts(type, path_):
