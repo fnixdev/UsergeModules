@@ -6,7 +6,7 @@ import shutil
 import tempfile
 import yt_dlp
 
-
+from wget import download
 from youtubesearchpython import SearchVideos
 from re import A, compile as comp_regex
 
@@ -149,11 +149,13 @@ if userge.has_bot:
     async def yt_down_cb(cq: CallbackQuery):
         with tempfile.TemporaryDirectory() as tempdir:
             path_ = os.path.join(tempdir, "ytdl")
+        await cq.edit_message_caption("Processando.")
         callback = cq.data.split("|")
         type_ = callback[1]
         id_ = callback[2]
         url_ = f"{BASE_YT}{id_}"
         opts_ = get_opts(type_, path_)
+        thumb_ = download(await get_ytthumb(id_), tempdir)
         with yt_dlp.YoutubeDL(opts_) as ydl:
             inf = ydl.extract_info(url_, download=True)
             filename_ = ydl.prepare_filename(inf)
@@ -164,7 +166,7 @@ if userge.has_bot:
                     media=InputMediaVideo(
                         media=filename_,
                         caption=title_,
-                        thumb=await get_ytthumb(id_),
+                        thumb=thumb_,
                         duration=int(inf["duration"])
                     )
                 )
@@ -179,7 +181,7 @@ if userge.has_bot:
                 )
         except BadRequest as e:
             return CHANNEL.log(e)
-
+        shutil.rmtree(tempdir, ignore_errors=True)
 
 def get_opts(type, path_):
     if type == "aud":
