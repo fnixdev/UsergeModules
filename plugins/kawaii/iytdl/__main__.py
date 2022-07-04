@@ -1,12 +1,17 @@
 # == kang from https://github.com/lostb053/Userge-Plugins/tree/dev/plugins/utils/iytdl
 
+import os
 import json
+import shutil
+import tempfile
+import yt_dlp
+from plugins.kawaii.youtube.__main__ import BASE_YT_URL
 
 from youtubesearchpython import SearchVideos
-from re import compile as comp_regex
+from re import A, compile as comp_regex
 
 from pyrogram import filters
-from pyrogram.errors import MessageIdInvalid, MessageNotModified
+from pyrogram.errors import MessageIdInvalid, MessageNotModified, BadRequest
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputMediaAudio, InputMediaVideo, InlineQuery, InlineQueryResultPhoto, InlineQueryResultArticle, InputTextMessageContent
 
 from userge import Message, userge, config as Config
@@ -14,6 +19,7 @@ from userge.utils import get_response
 from ...builtin import sudo
 
 LOGGER = userge.getLogger(__name__)
+CHANNEL = userge.getCLogger(__name__)
 YOUTUBE_REGEX = comp_regex(
     r"(?:youtube\.com|youtu\.be)/(?:[\w-]+\?v=|embed/|v/|shorts/)?([\w-]{11})"
 )
@@ -146,8 +152,76 @@ if userge.has_bot:
     @userge.bot.on_callback_query(filters=filters.regex(pattern=r"yt_down\|(.*)"))
     @check_owner
     async def yt_down_cb(cq: CallbackQuery):
+        with tempfile.TemporaryDirectory() as tempdir:
+            path_ = os.path.join(tempdir, "ytdl")
         callback = cq.data.split("|")
         await userge.send_message(cq.message.chat.id, callback)
+        type_ = callback[1]
+        id_ = callback[2]
+        opts_ = get_opts(type_, path_)
+        with yt_dlp.YoutubeDL(opts_) as ydl:
+            inf = ydl.extract_info(BASE_YT_URL+id_, download=True)
+            filename_ = ydl.prepare_filename(inf)
+            title_ = inf["title"]
+        try:
+            if type_ == "vid":
+                await cq.edit_message_media(
+                    media=InputMediaVideo(
+                        media=filename_,
+                        caption=title_,
+                        thumb=await get_ytthumb(id_),
+                        duration=int(inf["duration"])
+                    )
+                )
+            else:
+                await cq.edit_message_media(
+                    media=InputMediaAudio(
+                        media=filename_,
+                        caption=title_,
+                        thumb=await get_ytthumb(id_),
+                        duration=int(inf["duration"])
+                    )
+                )
+        except BadRequest as e:
+            return CHANNEL.log(e)
+
+
+def get_opts(type, path_):
+    if type == "aud":
+        _opts = {
+            "outtmpl": os.path.join(path_, "%(title)s.%(ext)s"),
+            "logger": LOGGER,
+            "writethumbnail": True,
+            "prefer_ffmpeg": True,
+            'format': 'bestaudio/best',
+            "geo_bypass": True,
+            "nocheckcertificate": True,
+            "postprocessors": [
+                {
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': "mp3",
+                    'preferredquality': '320',
+                },
+                {"key": "EmbedThumbnail"},
+                {"key": "FFmpegMetadata"},
+            ],
+            "quiet": True,
+        }
+    else:
+        _opts = {
+            "outtmpl": os.path.join(path_, "%(title)s.%(ext)s"),
+            'logger': LOGGER,
+            'writethumbnail': False,
+            'prefer_ffmpeg': True,
+            'format': 'bestvideo+bestaudio/best',
+            'postprocessors': [
+                {
+                    'key': 'FFmpegMetadata'
+                }
+            ],
+            "quiet": True,
+        }
+    return _opts
 
 
 def get_yt_video_id(url: str):
@@ -186,4 +260,3 @@ async def get_ytthumb(videoid: str):
             thumb_link = link
             break
     return thumb_link
-
