@@ -11,6 +11,7 @@ import yt_dlp
 from wget import download
 from youtubesearchpython import SearchVideos
 from re import A, compile as comp_regex
+from iytdl import main
 
 from pyrogram import filters
 from pyrogram.errors import MessageIdInvalid, MessageNotModified, BadRequest
@@ -19,7 +20,6 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQ
 from userge import Message, userge, config as Config
 from userge.utils import get_response
 from ...builtin import sudo
-from . import PATH
 
 
 LOGGER = userge.getLogger(__name__)
@@ -109,29 +109,19 @@ if userge.has_bot:
     async def inline_iydl(_, inline_query: InlineQuery):
         query = inline_query.query.split("ytdl ")[1].strip()
         results = []
-        found_ = True
         link_ = get_link(query)
         id_ = get_yt_video_id(link_)
+        x = await main.Extractor().get_download_button(id_)
+        found_ = True
         thumb_ = await get_ytthumb(id_)
-        title_ = extract_basic(link_)
-        btn = InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton(
-                            "Video", callback_data=f"yt_down|vid|{id_}"),
-                        InlineKeyboardButton(
-                            "Audio", callback_data=f"yt_down|aud|{id_}")
-                    ]
-                ]
-            )
         if found_:
             results.append(
                 InlineQueryResultPhoto(
                     photo_url=thumb_,
-                    title=title_,
+                    title=link_,
                     description="click to download",
-                    caption=title_,
-                    reply_markup=btn,
+                    caption=x.caption,
+                    reply_markup=x.buttons,
                 )
             )
         else:
@@ -149,6 +139,16 @@ if userge.has_bot:
             cache_time=5
         )
         inline_query.stop_propagation()
+
+
+
+
+
+
+
+
+
+
 
     @userge.bot.on_callback_query(filters=filters.regex(pattern=r"yt_down\|(.*)"))
     @check_owner
@@ -206,7 +206,7 @@ def extract_basic(link):
     ydl_opts = {}
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(link, download=False)
-    return f'❯ {info["title"]}'
+    return f'`❯ {info["title"]}`'
 
 
 def extract_full(link: str,opts_: str):
