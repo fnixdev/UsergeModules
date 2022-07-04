@@ -156,7 +156,7 @@ if userge.has_bot:
         url_ = f"{BASE_YT}{id_}"
         with tempfile.TemporaryDirectory() as tempdir:
             path_ = os.path.join(tempdir, "ytdl")
-        opts_ = get_opts(type_, tempdir)
+        opts_ = get_opts(type_, path_)
         thumb_ = download(await get_ytthumb(id_), Config.Dynamic.DOWN_PATH)
         with yt_dlp.YoutubeDL(opts_) as ydl:
             inf = ydl.extract_info(url_, download=True)
@@ -164,14 +164,26 @@ if userge.has_bot:
             title_ = inf["title"]
         try:
             if type_ == "vid":
-                await cq.edit_message_media(
-                    media=InputMediaVideo(
-                        media=str(filename_),
-                        caption=title_,
-                        thumb=thumb_,
-                        duration=int(inf["duration"])
+                try:
+                    await cq.edit_message_media(
+                        media=InputMediaVideo(
+                            media=str(filename_),
+                            caption=title_,
+                            thumb=thumb_,
+                            duration=int(inf["duration"])
+                        )
                     )
-                )
+                except ValueError:
+                    await cq.edit_message_media(
+                        media=InputMediaVideo(
+                            media=str(filename_).replace(".webm", ".mp4"),
+                            caption=title_,
+                            thumb=thumb_,
+                            duration=int(inf["duration"])
+                        )
+                    )
+                except Exception as e:
+                    return LOGGER.exception(e)
             else:
                 await cq.edit_message_media(
                     media=InputMediaAudio(
