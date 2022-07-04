@@ -4,21 +4,106 @@
 #
 # = All copyrights to UsergeTeam
 #
-# ==
+# == 
 
-import asyncio
 import os
+import wget
+import math
+import asyncio
+import datetime
+import requests
+
+from re import sub
+from cowpy import cow
 from collections import deque
 from random import choice, getrandbits, randint
-from re import sub
 
 from pyrogram import enums
 
-import requests
-import wget
-from cowpy import cow
-
 from userge import userge, Message, pool
+
+
+@userge.on_cmd("yp$", about={"header": "Barra de progresso do ano"})
+async def progresss(message):
+    x = datetime.datetime.now()
+    day = int(x.strftime("%j"))
+    total_days = 365 if x.year % 4 != 0 else 366  # Haha Yes Finally
+    percent = math.trunc(day / total_days * 100)
+    num = round(percent / 5)
+
+    progress = [
+        "░░░░░░░░░░░░░░░░░░░░",
+        "▓░░░░░░░░░░░░░░░░░░░",
+        "▓▓░░░░░░░░░░░░░░░░░░",
+        "▓▓▓░░░░░░░░░░░░░░░░░",
+        "▓▓▓▓░░░░░░░░░░░░░░░░",
+        "▓▓▓▓▓░░░░░░░░░░░░░░░",
+        "▓▓▓▓▓▓░░░░░░░░░░░░░░",
+        "▓▓▓▓▓▓▓░░░░░░░░░░░░░",
+        "▓▓▓▓▓▓▓▓░░░░░░░░░░░░",
+        "▓▓▓▓▓▓▓▓▓░░░░░░░░░░░",
+        "▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░",
+        "▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░",
+        "▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░",
+        "▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░",
+        "▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░",
+        "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░",
+        "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░",
+        "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░",
+        "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░",
+        "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░",
+        "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓",
+    ]
+
+    message_out = f"<b>Progresso do ano</b>\n<code>{progress[num]} {percent}%</code>"
+    await message.edit(message_out)
+
+
+@userge.on_cmd("fds", about={"header": "fodase?"})
+async def fds_(message: Message):
+    out_str = f"""
+F
+     O
+　　 O
+　　　O
+　　　 o
+ₒ ᵒ 。   o
+ᵒ ₒ °ₒ  ᵒ
+　 ˚
+　°
+　•
+　 .
+　　.   
+           da-se?
+    """
+    await message.edit(out_str)
+
+
+@userge.on_cmd("rt", about={"header": "rt message"}, trigger="", allow_via_bot=False)
+async def rt_(message: Message):
+    """rt mensagem"""
+    retweet = message.reply_to_message
+    try:
+        rt_msg = retweet.text
+        user_ = retweet.from_user.first_name
+        user_me = await message.client.get_user_dict(message.from_user.id)
+        usr_me = user_me["fname"]
+        mensg = f"🔃 **{usr_me}** retweetou:\n\n👤 **{user_}**: __{rt_msg}__"
+        await message.edit(mensg)
+    except:
+        pass
+
+
+@userge.on_cmd("iam", about={"header": "i am gay?"})
+async def iam_(message: Message):
+    reply_ = message.reply_to_message
+    if not reply_:
+        iam = f"`🌈 I am {choice(range(0,100))}% gay!`"
+        await message.edit(iam)
+        return
+    user_ = await userge.get_users(reply_.from_user.id)
+    msg_ = f"🌈 {user_.mention} `é {choice(range(0,100))}% gay!`"
+    await message.edit(msg_)
 
 
 @userge.on_cmd(r"(?:Kek|:/)$",
@@ -561,6 +646,85 @@ async def dice_gen(message: Message):
     random_emo = choice(DICE_EMO)
     await message.client.send_dice(message.chat.id, random_emo)
     await message.delete()
+
+
+
+@userge.on_cmd("sexo", about={"header": "sexoooooooooooo"})
+async def snake_(message: Message):
+    """muito sexo"""
+    out = f"""
+HOLY SHIT!!
+"""
+
+    out2 = f"""
+        IS THAT A 
+MOTHERFUCKING
+█▀▀ █▀▀ █─█ █▀▀█ 
+▀▀█ █▀▀ ▄▀▄ █──█ 
+▀▀▀ ▀▀▀ ▀─▀ ▀▀▀▀
+           REFERENCE???
+"""
+    out3 = f"""
+Perai...é aqui que estão falando de...
+"""
+
+    out4 = f"""
+KKKKKKKKKK
+KKKKKKKKKK
+KKKK
+KKKK
+KKKKKKKKKK
+KKKKKKKKKK
+               KKKK
+               KKKK
+KKKKKKKKKK
+KKKKKKKKKK
+KKKKKKKKKK
+KKKKKKKKKK
+KKKK
+KKKK
+KKKKKKKKKK
+KKKKKKKKKK
+KKKK
+KKKK
+KKKKKKKKKK
+KKKKKKKKKK
+KKKK       KKKK
+ KKKK    KKKK
+   KKKK KKKK
+      KKKKKK
+      KKKKKK
+      KKKKKK
+  KKKK     KKKK
+KKKK        KKKK
+KKKKKKKKKK
+KKKKKKKKKK
+KKKK     KKKK
+KKKK     KKKK
+KKKK     KKKK
+KKKK     KKKK
+KKKKKKKKKK
+KKKKKKKKKK
+  KKKKKKKK
+KKKKKKKKKK
+KKK        KKK
+              KKK
+            KKK
+          KKK
+        KKK
+      KKK  
+      KKK   
+    
+      KKK
+      KKK
+"""
+    await message.edit(out)
+    await asyncio.sleep(3)
+    await message.edit(out2)
+    await asyncio.sleep(3)
+    await message.edit(out3)
+    await asyncio.sleep(3)
+    await message.edit(out4)
 
 
 THROW = ("throws", "flings", "chucks", "hurls")
