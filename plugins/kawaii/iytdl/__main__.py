@@ -185,7 +185,7 @@ if userge.has_bot:
                         )
                     )
                 except Exception as e:
-                    return LOGGER.exception(e)
+                    return await LOGGER.exception(e)
             else:
                 await cq.edit_message_caption("`❯ Uploading Audio ...`")
                 await cq.edit_message_media(
@@ -197,7 +197,7 @@ if userge.has_bot:
                     )
                 )
         except BadRequest as e:
-            return CHANNEL.log(e)
+            return await CHANNEL.log(e)
         shutil.rmtree(tempdir, ignore_errors=True)
         os.remove(thumb_)
 
