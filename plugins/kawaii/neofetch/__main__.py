@@ -42,12 +42,12 @@ async def neofetch_(message: Message):
                 parse_mode=ParseMode.HTML,
             )
     else:
-        x = "<code>{}</code>".format((await runcmd('Powershell.exe -executionpolicy remotesigned -Command "screenfetch"'))[0])
+        x = (await runcmd('Powershell.exe -executionpolicy remotesigned -Command "screenfetch"'))[0]
         lista = x.splitlines()
         kek = ""
         for i in lista:
             kek += i[40:] + "\n"
-        await message.reply(kek, parse_mode=ParseMode.HTML)
+        await message.edit(f'<code>{kek}</code>', parse_mode=ParseMode.HTML)
 
 
 async def neo_image():
