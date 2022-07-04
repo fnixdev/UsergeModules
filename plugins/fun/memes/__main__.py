@@ -63,20 +63,20 @@ async def progresss(message):
 async def fds_(message: Message):
     out_str = f"""
 F
-     O
-　　 O
-　　　O
-　　　 o
+  O
+　　  O
+　　  　O
+　　　   o
 ₒ ᵒ 。   o
 ᵒ ₒ °ₒ  ᵒ
 　 ˚
 　°
-　•
+　• 
 　 .
 　　.   
            da-se?
     """
-    await message.edit(out_str)
+    await message.edit(f'`{out_str}`')
 
 
 @userge.on_cmd("rt", about={"header": "rt message"}, trigger="", allow_via_bot=False)
@@ -679,6 +679,7 @@ KKKKKKKKKK
                KKKK
 KKKKKKKKKK
 KKKKKKKKKK
+
 KKKKKKKKKK
 KKKKKKKKKK
 KKKK
@@ -689,6 +690,7 @@ KKKK
 KKKK
 KKKKKKKKKK
 KKKKKKKKKK
+
 KKKK       KKKK
  KKKK    KKKK
    KKKK KKKK
@@ -697,6 +699,7 @@ KKKK       KKKK
       KKKKKK
   KKKK     KKKK
 KKKK        KKKK
+
 KKKKKKKKKK
 KKKKKKKKKK
 KKKK     KKKK
@@ -705,6 +708,7 @@ KKKK     KKKK
 KKKK     KKKK
 KKKKKKKKKK
 KKKKKKKKKK
+
   KKKKKKKK
 KKKKKKKKKK
 KKK        KKK
