@@ -155,7 +155,7 @@ if userge.has_bot:
         id_ = callback[2]
         opts_ = get_opts(type_, path_)
         with yt_dlp.YoutubeDL(opts_) as ydl:
-            inf = ydl.extract_info(BASE_YT+id_, download=True)
+            inf = ydl.extract_info(str(BASE_YT+id_), download=True)
             filename_ = ydl.prepare_filename(inf)
             title_ = inf["title"]
         try:
@@ -227,7 +227,7 @@ def get_yt_video_id(url: str):
 
 def get_link(query):
     vid_id = get_yt_video_id(query)
-    link = BASE_YT+vid_id
+    link = str(BASE_YT+vid_id)
     if vid_id is None:
         try:
             res_ = SearchVideos(query, offset=1, mode="json", max_results=1)
