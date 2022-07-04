@@ -166,7 +166,7 @@ if userge.has_bot:
             if type_ == "vid":
                 await cq.edit_message_media(
                     media=InputMediaVideo(
-                        media=str(filename_).replace(".webm", ".mp4"),
+                        media=str(filename_),
                         caption=title_,
                         thumb=thumb_,
                         duration=int(inf["duration"])
