@@ -67,14 +67,14 @@ F
 　　  O
 　　  　O
 　　　   o
-ₒ ᵒ 。   o
-ᵒ ₒ °ₒ  ᵒ
+ₒ ᵒ 。 o
+ᵒ ₒ °ₒ ᵒ
 　 ˚
 　°
 　• 
 　 .
 　　.   
-           da-se?
+    da-se?
     """
     await message.edit(f'`{out_str}`')
 
