@@ -142,6 +142,12 @@ if userge.has_bot:
         )
         inline_query.stop_propagation()
 
+    @userge.bot.on_callback_query(filters=filters.regex(pattern=r"yt_down\|(.*)"))
+    @check_owner
+    async def yt_down_cb(cq: CallbackQuery):
+        callback = cq.data.split("|")
+        await userge.send_message(cq.chat.id, callback)
+
 
 def get_yt_video_id(url: str):
     match = YOUTUBE_REGEX.search(url)
