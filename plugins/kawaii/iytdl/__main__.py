@@ -150,7 +150,6 @@ if userge.has_bot:
         with tempfile.TemporaryDirectory() as tempdir:
             path_ = os.path.join(tempdir, "ytdl")
         callback = cq.data.split("|")
-        await userge.send_message(cq.message.chat.id, callback)
         type_ = callback[1]
         id_ = callback[2]
         url_ = f"{BASE_YT}{id_}"
