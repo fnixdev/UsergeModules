@@ -184,6 +184,8 @@ if userge.has_bot:
         except BadRequest as e:
             return CHANNEL.log(e)
         shutil.rmtree(tempdir, ignore_errors=True)
+        os.remove(thumb_)
+
 
 def get_opts(type, path_):
     if type == "aud":
