@@ -4,6 +4,7 @@
 #
 # ==
 
+import os
 from io import BytesIO
 
 from pyrogram.enums import ParseMode
@@ -28,16 +29,25 @@ async def neofetch_(message: Message):
     await message.edit("Getting System Info ...")
     reply = message.reply_to_message
     reply_id = reply.message_id if reply else None
-    if "-img" in message.flags:
-        await message.delete()
-        await message.client.send_photo(
-            message.chat.id, await neo_image(), reply_to_message_id=reply_id
-        )
+    system = os.name
+    if system == "posix":
+        if "-img" in message.flags:
+            await message.delete()
+            await message.client.send_photo(
+                message.chat.id, await neo_image(), reply_to_message_id=reply_id
+            )
+        else:
+            await message.edit(
+                "<code>{}</code>".format((await runcmd("neofetch --stdout"))[0]),
+                parse_mode=ParseMode.HTML,
+            )
     else:
-        await message.edit(
-            "<code>{}</code>".format((await runcmd("neofetch --stdout"))[0]),
-            parse_mode=ParseMode.HTML,
-        )
+        x = "<code>{}</code>".format((await runcmd('Powershell.exe -executionpolicy remotesigned -Command "screenfetch"'))[0])
+        lista = x.splitlines()
+        kek = ""
+        for i in lista:
+            kek += i[40:] + "\n"
+        await message.reply(kek, parse_mode=ParseMode.HTML)
 
 
 async def neo_image():
