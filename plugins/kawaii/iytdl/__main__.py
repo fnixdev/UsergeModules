@@ -49,9 +49,9 @@ async def iytdl_ub_cmd(m: Message):
             [
                 [
                     InlineKeyboardButton(
-                        "Video", callback_data=f"yt_down|aud|{id_}"),
+                        "Video", callback_data=f"yt_down|vid|{id_}"),
                     InlineKeyboardButton(
-                        "Audio", callback_data=f"yt_down|vid|{id_}")
+                        "Audio", callback_data=f"yt_down|aud|{id_}")
                 ]
             ]
         )
@@ -147,7 +147,7 @@ if userge.has_bot:
     @check_owner
     async def yt_down_cb(cq: CallbackQuery):
         callback = cq.data.split("|")
-        await userge.send_message(cq.chat.id, callback)
+        await userge.send_message(cq.message.chat.id, callback)
 
 
 def get_yt_video_id(url: str):
