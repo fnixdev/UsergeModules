@@ -154,8 +154,10 @@ if userge.has_bot:
         type_ = callback[1]
         id_ = callback[2]
         url_ = f"{BASE_YT}{id_}"
-        opts_ = get_opts(type_, PATH)
-        thumb_ = download(await get_ytthumb(id_), PATH)
+        with tempfile.TemporaryDirectory() as tempdir:
+            path_ = os.path.join(tempdir, "ytdl")
+        opts_ = get_opts(type_, tempdir)
+        thumb_ = download(await get_ytthumb(id_), Config.Dynamic.DOWN_PATH)
         with yt_dlp.YoutubeDL(opts_) as ydl:
             inf = ydl.extract_info(url_, download=True)
             filename_ = ydl.prepare_filename(inf)
@@ -181,7 +183,7 @@ if userge.has_bot:
                 )
         except BadRequest as e:
             return CHANNEL.log(e)
-        shutil.rmtree(PATH, ignore_errors=True)
+        shutil.rmtree(tempdir, ignore_errors=True)
 
 def get_opts(type, path_):
     if type == "aud":
