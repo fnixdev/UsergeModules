@@ -164,7 +164,7 @@ if userge.has_bot:
             if type_ == "vid":
                 await cq.edit_message_media(
                     media=InputMediaVideo(
-                        media=filename_,
+                        media=str(filename_).replace(".webm", "mp4"),
                         caption=title_,
                         thumb=thumb_,
                         duration=int(inf["duration"])
@@ -173,7 +173,7 @@ if userge.has_bot:
             else:
                 await cq.edit_message_media(
                     media=InputMediaAudio(
-                        media=filename_,
+                        media=str(filename_).replace(".webm", "mp3"),
                         caption=title_,
                         thumb=await get_ytthumb(id_),
                         duration=int(inf["duration"])
