@@ -1,30 +1,21 @@
 # == kang from https://github.com/lostb053/Userge-Plugins/tree/dev/plugins/utils/iytdl
 
 from fileinput import filename
-import os
 import json
-import shutil
-import tempfile
-from numpy import extract
-import yt_dlp
 
-from wget import download
 from youtubesearchpython import SearchVideos
 from re import A, compile as comp_regex
 from iytdl import main
 
 from pyrogram import filters
-from pyrogram.errors import MessageIdInvalid, MessageNotModified, BadRequest
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputMediaAudio, InputMediaVideo, InlineQuery, InlineQueryResultPhoto, InlineQueryResultArticle, InputTextMessageContent
+from pyrogram.errors import MessageIdInvalid, MessageNotModified
+from pyrogram.types import CallbackQuery, InlineQuery, InlineQueryResultPhoto, InlineQueryResultArticle, InputTextMessageContent
 
 from userge import Message, userge, config as Config
 from userge.utils import get_response
 from ...builtin import sudo
 
-
 LOGGER = userge.getLogger(__name__)
-CHANNEL = userge.getCLogger(__name__)
-BASE_YT = "https://www.youtube.com/watch?v="
 YOUTUBE_REGEX = comp_regex(
     r"(?:youtube\.com|youtu\.be)/(?:[\w-]+\?v=|embed/|v/|shorts/)?([\w-]{11})"
 )
@@ -93,7 +84,6 @@ if userge.has_bot:
                 and inline_query.from_user
                 and inline_query.from_user.id in Config.OWNER_ID
             ),
-            # https://t.me/UserGeSpam/359404
             name="YtdlInline"
         ),
         group=-2
@@ -148,14 +138,6 @@ if userge.has_bot:
         await ytdl.upload(userge.bot, upload_key, format_, cq, True)
 
 
-
-def extract_basic(link):
-    ydl_opts = {}
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(link, download=False)
-    return f'`❯ {info["title"]}`'
-
-
 def get_yt_video_id(url: str):
     match = YOUTUBE_REGEX.search(url)
     if match:
@@ -164,7 +146,7 @@ def get_yt_video_id(url: str):
 
 def get_link(query):
     vid_id = get_yt_video_id(query)
-    link = f"{BASE_YT}{vid_id}"
+    link = f"https://www.youtube.com/watch?v={vid_id}"
     if vid_id is None:
         try:
             res_ = SearchVideos(query, offset=1, mode="json", max_results=1)
