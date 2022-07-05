@@ -6,11 +6,12 @@
 
 import os
 
+from html_telegraph_poster import TelegraphPoster
+
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from userge import Message, userge
 from userge.utils import runcmd
-from ..telegraph import post_to_telegraph
 
 
 @userge.on_cmd("mediainfo", about={"header": "Get Detailed Info About Replied Media"})
@@ -71,3 +72,17 @@ def safe_filename(path_):
     if safename != path_:
         os.rename(path_, safename)
     return safename
+
+
+def post_to_telegraph(a_title: str, content: str) -> str:
+    """ Create a Telegram Post using HTML Content """
+    post_client = TelegraphPoster(use_api=True)
+    auth_name = "@HilzuUB"
+    post_client.create_api_token(auth_name)
+    post_page = post_client.post(
+        title=a_title,
+        author=auth_name,
+        author_url="https://telegram.me/HilzuUB",
+        text=content
+    )
+    return post_page['url']
