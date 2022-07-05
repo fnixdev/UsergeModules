@@ -35,7 +35,8 @@ from .. import kang
                  "an image to kang it to your userbot pack.",
         'examples': ["{tr}kang", "{tr}kang -s", "{tr}kang -d",
                      "{tr}kang 🤔😎", "{tr}kang 2", "{tr}kang 🤔🤣😂 2"]},
-    allow_channels=False)
+    allow_channels=False,
+    allow_via_bot=False)
 async def kang_(message: Message):
     """ kang a sticker """
     replied = message.reply_to_message
@@ -128,8 +129,6 @@ async def kang_(message: Message):
         packnick += " (Video)"
 
     while True:
-        if userge.has_bot:
-            packname += f"_by_{bot.username}"
         try:
             exist = await message.client.invoke(
                 GetStickerSet(
