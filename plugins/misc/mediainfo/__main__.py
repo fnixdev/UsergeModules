@@ -10,7 +10,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from userge import Message, userge
 from userge.utils import runcmd
-from ..upload import post_to_telegraph
+from ..telegraph import post_to_telegraph
 
 
 @userge.on_cmd("mediainfo", about={"header": "Get Detailed Info About Replied Media"})
