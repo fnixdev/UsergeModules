@@ -31,7 +31,7 @@ async def quotecmd(message: Message):
                 await message.err("give valid no. of message to quote", del_in=5)
                 return
             num_ = min(int(limit), 24)
-            async for msg in userge.iter_history(
+            async for msg in userge.get_chat_history(
                 message.chat.id, limit=num_, offset_id=reply.id, reverse=True
             ):
                 if msg.id != message.id:
