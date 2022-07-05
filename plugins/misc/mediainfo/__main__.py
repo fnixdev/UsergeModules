@@ -14,7 +14,7 @@ from userge import Message, userge
 from userge.utils import runcmd
 
 
-@userge.on_cmd("mediainfo", about={"header": "Get Detailed Info About Replied Media"})
+@userge.on_cmd("mediainfo", about={"header": "Get Detailed Info About Replied Media"}, allow_via_bot=False)
 async def mediainfo(message: Message):
     """Get Media Info"""
     reply = message.reply_to_message
