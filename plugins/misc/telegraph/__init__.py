@@ -5,3 +5,5 @@
 # ==
 
 """ telegraph uploader """
+
+from . import post_to_telegraph
