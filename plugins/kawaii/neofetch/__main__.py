@@ -62,7 +62,7 @@ async def neo_win():
     neofetch = ""
     for i in lista:
         neofetch += i[40:] + "\n"
-    font_color = (201, 100, 86)  # Red
+    font_color = (201, 100, 86)  # Blue
     white = (255, 255, 255)
     base_pic = "https://telegra.ph/file/c331521fb52bebf7f6756.png"
     font_url = (
@@ -70,7 +70,7 @@ async def neo_win():
     )
     photo = Image.open(BytesIO(get(base_pic).content))
     drawing = ImageDraw.Draw(photo)
-    font = ImageFont.truetype(BytesIO(get(font_url).content), 14)
+    font = ImageFont.truetype(BytesIO(get(font_url).content), 12)
     x = 0
     y = 0
     for u_text in neofetch.splitlines():
@@ -93,7 +93,7 @@ async def neo_win():
     new_pic = BytesIO()
     photo = photo.resize(photo.size, Image.ANTIALIAS)
     photo.save(new_pic, format="PNG")
-    new_pic.name = "NeoFetch.png"
+    new_pic.name = "WinFetch.png"
     return new_pic
 
 
