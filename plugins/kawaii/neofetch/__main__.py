@@ -62,9 +62,9 @@ async def neo_win():
     neofetch = ""
     for i in lista:
         neofetch += i[40:] + "\n"
-    font_color = (186, 100, 65)  # Red
+    font_color = (201, 100, 86)  # Red
     white = (255, 255, 255)
-    base_pic = "https://telegra.ph/file/9c16c7588eaad0238802f.png"
+    base_pic = "https://telegra.ph/file/c331521fb52bebf7f6756.png"
     font_url = (
         "https://raw.githubusercontent.com/code-rgb/AmongUs/master/FiraCode-Regular.ttf"
     )
@@ -77,17 +77,17 @@ async def neo_win():
         if ":" in u_text:
             ms = u_text.split(":", 1)
             drawing.text(
-                xy=(265, 10 + x),
+                xy=(450, 20 + x),
                 text=ms[0] + ":",
                 font=font,
                 fill=font_color,
             )
             drawing.text(
-                xy=((8.5 * len(ms[0])) + 265, 10 + x), text=ms[1], font=font, fill=white
+                xy=((8.5 * len(ms[0])) + 450, 20 + x), text=ms[1], font=font, fill=white
             )
         else:
             color = font_color if y == 0 else white
-            drawing.text(xy=(265, 10 + y), text=u_text, font=font, fill=color)
+            drawing.text(xy=(450, 20 + y), text=u_text, font=font, fill=color)
         x += 20
         y += 13
     new_pic = BytesIO()
