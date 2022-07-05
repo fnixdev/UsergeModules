@@ -129,6 +129,8 @@ async def kang_(message: Message):
         packnick += " (Video)"
 
     while True:
+        if userge.has_bot:
+            packname += f""
         try:
             exist = await message.client.invoke(
                 GetStickerSet(
