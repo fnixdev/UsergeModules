@@ -42,12 +42,59 @@ async def neofetch_(message: Message):
                 parse_mode=ParseMode.HTML,
             )
     else:
-        x = (await runcmd('Powershell.exe -executionpolicy remotesigned -Command "screenfetch"'))[0]
-        lista = x.splitlines()
-        kek = ""
-        for i in lista:
-            kek += i[40:] + "\n"
-        await message.edit(f'<code>{kek}</code>', parse_mode=ParseMode.HTML)
+        if "-img" in message.flags:
+            await message.delete()
+            await message.client.send_photo(
+                message.chat.id, await neo_win(), reply_to_message_id=reply_id
+            )
+        else:
+            x = (await runcmd('Powershell.exe -executionpolicy remotesigned -Command "screenfetch"'))[0]
+            lista = x.splitlines()
+            kek = ""
+            for i in lista:
+                kek += i[40:] + "\n"
+            await message.edit(f'<code>{kek}</code>', parse_mode=ParseMode.HTML)
+
+
+async def neo_win():
+    x = (await runcmd('Powershell.exe -executionpolicy remotesigned -Command "screenfetch"'))[0]
+    lista = x.splitlines()
+    neofetch = ""
+    for i in lista:
+        neofetch += i[40:] + "\n"
+    font_color = (255, 42, 38)  # Red
+    white = (255, 255, 255)
+    base_pic = "https://telegra.ph/file/9c16c7588eaad0238802f.png"
+    font_url = (
+        "https://raw.githubusercontent.com/code-rgb/AmongUs/master/FiraCode-Regular.ttf"
+    )
+    photo = Image.open(BytesIO(get(base_pic).content))
+    drawing = ImageDraw.Draw(photo)
+    font = ImageFont.truetype(BytesIO(get(font_url).content), 14)
+    x = 0
+    y = 0
+    for u_text in neofetch.splitlines():
+        if ":" in u_text:
+            ms = u_text.split(":", 1)
+            drawing.text(
+                xy=(265, 45 + x),
+                text=ms[0] + ":",
+                font=font,
+                fill=font_color,
+            )
+            drawing.text(
+                xy=((8.5 * len(ms[0])) + 265, 45 + x), text=ms[1], font=font, fill=white
+            )
+        else:
+            color = font_color if y == 0 else white
+            drawing.text(xy=(265, 53 + y), text=u_text, font=font, fill=color)
+        x += 20
+        y += 13
+    new_pic = BytesIO()
+    photo = photo.resize(photo.size, Image.ANTIALIAS)
+    photo.save(new_pic, format="PNG")
+    new_pic.name = "NeoFetch.png"
+    return new_pic
 
 
 async def neo_image():
