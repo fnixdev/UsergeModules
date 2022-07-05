@@ -32,7 +32,7 @@ async def quotecmd(message: Message):
                 return
             num_ = min(int(limit), 24)
             async for msg in userge.get_chat_history(
-                message.chat.id, limit=num_, offset_id=reply.id, reverse=True
+                message.chat.id, limit=num_, offset_id=reply.id
             ):
                 if msg.id != message.id:
                     quote_list.append(msg.id)
