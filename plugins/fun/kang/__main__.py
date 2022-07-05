@@ -104,6 +104,9 @@ async def kang_(message: Message):
         emoji_ = "🤔"
 
     user = await userge.get_me()
+    bot = None
+    if userge.has_bot:
+        bot = await userge.bot.get_me()
 
     u_name = user.username
     if u_name:
@@ -111,7 +114,7 @@ async def kang_(message: Message):
     else:
         u_name = user.first_name or user.id
 
-    packname = f"{user.id}_by_hilzu_{pack}"
+    packname = f"a{user.id}_by_x_{pack}"
     custom_packnick = kang.CUSTOM_PACK_NAME or f"{u_name}'s kang pack"
     packnick = f"{custom_packnick} Vol.{pack}"
 
@@ -125,6 +128,8 @@ async def kang_(message: Message):
         packnick += " (Video)"
 
     while True:
+        if userge.has_bot:
+            packname += f"_by_{bot.username}"
         try:
             exist = await message.client.invoke(
                 GetStickerSet(
