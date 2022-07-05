@@ -62,7 +62,7 @@ async def neo_win():
     neofetch = ""
     for i in lista:
         neofetch += i[40:] + "\n"
-    font_color = (255, 42, 38)  # Red
+    font_color = (186, 100, 65)  # Red
     white = (255, 255, 255)
     base_pic = "https://telegra.ph/file/9c16c7588eaad0238802f.png"
     font_url = (
@@ -77,17 +77,17 @@ async def neo_win():
         if ":" in u_text:
             ms = u_text.split(":", 1)
             drawing.text(
-                xy=(265, 45 + x),
+                xy=(265, 10 + x),
                 text=ms[0] + ":",
                 font=font,
                 fill=font_color,
             )
             drawing.text(
-                xy=((8.5 * len(ms[0])) + 265, 45 + x), text=ms[1], font=font, fill=white
+                xy=((8.5 * len(ms[0])) + 265, 10 + x), text=ms[1], font=font, fill=white
             )
         else:
             color = font_color if y == 0 else white
-            drawing.text(xy=(265, 53 + y), text=u_text, font=font, fill=color)
+            drawing.text(xy=(265, 10 + y), text=u_text, font=font, fill=color)
         x += 20
         y += 13
     new_pic = BytesIO()
