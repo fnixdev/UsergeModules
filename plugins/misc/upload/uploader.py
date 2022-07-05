@@ -23,7 +23,7 @@ from .. import thumbnail
 
 CHANNEL = userge.getCLogger(__name__)
 
-LOGO_PATH = 'resources/userge.png'
+LOGO_PATH = 'resources/hilzu.png'
 
 
 async def upload_path(message: Message, path: Path, del_path: bool):

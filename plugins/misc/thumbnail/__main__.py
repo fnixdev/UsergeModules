@@ -64,8 +64,8 @@ async def clear_thumb_nail(message: Message):
         os.remove(thumbnail.Dynamic.THUMB_PATH)
         await SAVED_SETTINGS.find_one_and_delete({'_id': 'CUSTOM_THUMB'})
         await message.edit("✅ Custom thumbnail deleted succesfully.", del_in=3)
-    elif os.path.exists('resources/userge.png'):
-        os.remove('resources/userge.png')
+    elif os.path.exists('resources/hilzu.png'):
+        os.remove('resources/hilzu.png')
         await message.edit("✅ Default thumbnail deleted succesfully.", del_in=3)
     else:
         await message.delete()
