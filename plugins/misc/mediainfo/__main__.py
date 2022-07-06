@@ -8,8 +8,6 @@ import os
 
 from html_telegraph_poster import TelegraphPoster
 
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-
 from userge import Message, userge
 from userge.utils import runcmd
 
