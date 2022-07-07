@@ -76,7 +76,7 @@ if userge.has_bot:
                 YT_DB[search_key] = query
                 search = await main.VideosSearch(query).next()
                 if search["result"] == []:
-                    return
+                    return await m.err(f"No result found for `{query}`")
                 i = search['result'][0]
                 out = f"<b><a href={i['link']}>{i['title']}</a></b>"
                 out += f"\nPublished {i['publishedTime']}\n"
@@ -185,6 +185,7 @@ if userge.has_bot:
         if match is None:
             search_key = rand_key()
             YT_DB[search_key] = query
+            i = []
             try:
                 i: list = (await main.VideosSearch(query=query).next())['result'][0]
             except IndexError:
