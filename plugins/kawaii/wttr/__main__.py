@@ -9,13 +9,12 @@ import aiohttp
 from html import escape
 
 from pyrogram.enums import ParseMode
-from pyrogram.errors import YouBlockedUser
 
 from userge import Message, userge
 
 
 @userge.on_cmd(
-    "weather",
+    "w",
     about={
         "header": "use this to get weather details",
         "description": "get weather info for any city",
