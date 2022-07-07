@@ -1,8 +1,3 @@
-## == Modules Userge by fnix
-#
-# = All copyrights to UsergeTeam
-#
-# ==
 """Google IMGS"""
 
 #  Copyright (C) 2021 BY USERGE-X
@@ -21,9 +16,15 @@ from google_images_download.google_images_download import googleimagesdownload
 from pyrogram.errors import FloodWait
 from pyrogram.types import InputMediaDocument, InputMediaPhoto
 
-from userge import Config, Message, pool, userge
+from userge import Message, pool, userge, config
 
 from ...misc.upload import doc_upload, photo_upload
+
+
+DOWN_PATH = config.Dynamic.DOWN_PATH
+
+def sublists(input_list: list, width: int = 3):
+    return [input_list[x : x + width] for x in range(0, len(input_list), width)]
 
 
 class Colors:
@@ -38,7 +39,7 @@ class Colors:
 
 
 @userge.on_cmd(
-    "img",
+    "(?:gimg|img)",
     about={
         "header": "Google Image Downloader",
         "description": "Search and download images from google and upload to telegram",
@@ -60,6 +61,7 @@ class Colors:
             "{tr}gimg -gif rain <download 5 gifs>",
         ],
     },
+    name="gimg",
     del_pre=True,
     check_downpath=True,
 )
@@ -74,14 +76,14 @@ async def gimg_down(message: Message):
         text = reply.text or reply.caption
 
     if not text:
-        await message.err("`Input not found...`", del_in=5)
+        await message.err("`Input not found!...`", del_in=5)
         return
     await message.edit("🔎")
     start_t = datetime.now()
     color_ = None
     flags_ = message.flags
     allow_gif = bool("gif" in flags_)
-    upload_ = not bool("down" in flags_)
+    upload_ = not bool("down" in flags_ or allow_gif)
     doc_ = bool("d" in flags_)
     limit = int(flags_.get("l", 5))
     limit = min(limit, 40) if upload_ else min(limit, 100)
@@ -102,7 +104,7 @@ async def gimg_down(message: Message):
     else:
         arguments = await get_arguments(query=text)
     media_type = "Gifs" if allow_gif else "Pics"
-    await message.edit(f"⬇️  Downloading {limit} {media_type} ...")
+    await message.edit(f"⬇️  Downloading  {limit} {media_type} ...")
     try:
         results = await gimg_downloader(arguments)
     except Exception as e:
@@ -111,16 +113,14 @@ async def gimg_down(message: Message):
     if upload_:
         await message.edit(f"⬆️  Uploading {limit} {media_type} ...")
         try:
-            gif = True if "gif" in flags_ else False
-            await upload_image_grp(results, message, gif, doc_)
+            await upload_image_grp(results, message, doc_)
         except Exception as err:
             await message.err(str(err), del_in=7)
         else:
-            type_ = "gif/s" if gif else "pic/s"
             end_t = datetime.now()
             time_taken_s = (end_t - start_t).seconds
             await message.edit(
-                f"Uploaded {limit} {type_} in {time_taken_s} sec with {results[1]} errors.",
+                f"Uploaded {limit} Pics in {time_taken_s} sec with {results[1]} errors.",
                 del_in=5,
                 log=__name__,
             )
@@ -128,7 +128,7 @@ async def gimg_down(message: Message):
         end_t = datetime.now()
         time_taken_s = (end_t - start_t).seconds
         await message.edit(
-            f"Downloaded {limit} {media_type} to `{os.path.join(Config.DOWN_PATH, text)}` in {time_taken_s}"
+            f"Downloaded {limit} {media_type} to `{os.path.join(DOWN_PATH, text)}` in {time_taken_s}"
             f"sec with {results[1]} errors.",
             log=__name__,
         )
@@ -152,7 +152,7 @@ async def get_arguments(
         arguments["no_directory"] = "no_directory"
     else:
         await check_path(path_name=query)
-        output_directory = Config.DOWN_PATH
+        output_directory = DOWN_PATH
     arguments["output_directory"] = output_directory
     if color:
         arguments["color"] = color
@@ -170,7 +170,7 @@ async def get_arguments(
 
 @pool.run_in_thread
 def check_path(path_name: str = "GIMG"):
-    path_ = os.path.join(Config.DOWN_PATH, path_name)
+    path_ = os.path.join(DOWN_PATH, path_name)
     if os.path.lexists(path_):
         rmtree(path_, ignore_errors=True)
     if path_name != "GIMG":
@@ -186,9 +186,7 @@ def gimg_downloader(arguments):
     return path_
 
 
-async def upload_image_grp(
-    results, message: Message, gif: bool = False, doc: bool = False
-):
+async def upload_image_grp(results, message: Message, doc: bool = False):
     key_ = list(results[0])[0]
     medias_ = results[0][key_]
     if message.process_is_canceled:
@@ -204,24 +202,12 @@ async def upload_image_grp(
     else:
         mgroups = sublists(
             [
-                (InputMediaDocument(media=x) if (doc) else InputMediaPhoto(media=x))
+                (InputMediaDocument(media=x) if doc else InputMediaPhoto(media=x))
                 for x in medias_
                 if x.endswith((".jpg", ".jpeg", ".png", ".bmp"))
             ],
             width=10,
         )
-        if gif:
-            total = 0
-            for path_ in medias_:
-                total += 1
-                try:
-                    await message.edit(
-                        f"⬆️  Uploading **{round(total / len(medias_) * 100)} %** ..."
-                    )
-                    await userge.send_document(message.chat.id, path_)
-                    os.remove(path_)
-                except FloodWait as f:
-                    await asyncio.sleep(f.x + 5)
         for num, m_ in enumerate(mgroups, start=1):
             try:
                 await message.edit(
@@ -231,7 +217,3 @@ async def upload_image_grp(
                 await asyncio.sleep(len(m_))
             except FloodWait as f:
                 await asyncio.sleep(f.x + 5)
-
-
-def sublists(input_list: list, width: int = 3):
-    return [input_list[x : x + width] for x in range(0, len(input_list), width)]
