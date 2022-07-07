@@ -4,11 +4,10 @@
 
 import requests
 
-from random import choice
 from validators.url import url
 
 from userge import Message, userge
-from userge.utils import deEmojify, choice
+from userge.utils import deEmojify, rand_array
 
 
 @userge.on_cmd(
@@ -106,13 +105,13 @@ async def anime_Scene(message: Message):
     elif "-s" in message.flags:
         character = "sayori"
     else:
-        character = choice(ddlc_char)
+        character = rand_array(ddlc_char)
 
     body = ddlc_items["body"][character]
-    rando_body = choice(body)
+    rando_body = rand_array(body)
     face = ddlc_items["face"][character]
-    rando_face = choice(face)
-    rand_background = choice(background)
+    rando_face = rand_array(face)
+    rand_background = rand_array(background)
     text = str(deEmojify(text))
 
     path = await ddlc(character, rando_face, rando_body, rand_background, text)
