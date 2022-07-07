@@ -55,7 +55,7 @@ if userge.has_bot:
         "iytdl",
         about={
             'header': "Advanced YTDL",
-            'usage': "{tr}yti URL or Query"}
+            'usage': "{tr}iytdl URL or Query"}
     )
     async def iytdl_ub_cmd(m: Message):
         reply = m.reply_to_message
