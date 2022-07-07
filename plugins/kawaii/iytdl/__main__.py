@@ -181,38 +181,38 @@ if userge.has_bot:
     async def iytdl_inline(_, iq: InlineQuery):
         query = iq.query.split("ytdl ", 1)[1]
         match = regex.match(query)
+        results = []
         found_ = True
         if match is None:
             search_key = rand_key()
             YT_DB[search_key] = query
-            i = ""
-            try:
-                i: list = (await main.VideosSearch(query=query).next())['result'][0]
-            except IndexError:
+            search = (await main.VideosSearch(query=query).next())
+            if len(search["result"]) == 0:
                 found_ = False
-            results = []
-            key = i['id']
-            thumb_ = await get_ytthumb(key)
-            out = f"<b><a href={i['link']}>{i['title']}</a></b>"
-            out += f"\nPublished {i['publishedTime']}\n"
-            out += f"\n<b>❯ Duration:</b> {i['duration']}"
-            out += f"\n<b>❯ Views:</b> {i['viewCount']['short']}"
-            out += f"\n<b>❯ Uploader:</b> <a href={i['channel']['link']}>{i['channel']['name']}</a>\n\n"
-            scroll_btn = [
-                [
-                    InlineKeyboardButton(
-                        f"1/{len(i)}", callback_data=f"ytdl_scroll|{search_key}|1")
+            else:
+                i = search["result"][0]
+                key = i['id']
+                thumb_ = await get_ytthumb(key)
+                out = f"<b><a href={i['link']}>{i['title']}</a></b>"
+                out += f"\nPublished {i['publishedTime']}\n"
+                out += f"\n<b>❯ Duration:</b> {i['duration']}"
+                out += f"\n<b>❯ Views:</b> {i['viewCount']['short']}"
+                out += f"\n<b>❯ Uploader:</b> <a href={i['channel']['link']}>{i['channel']['name']}</a>\n\n"
+                scroll_btn = [
+                    [
+                        InlineKeyboardButton(
+                            f"1/{len(i)}", callback_data=f"ytdl_scroll|{search_key}|1")
+                    ]
                 ]
-            ]
-            if len(i) == 1:
-                scroll_btn = []
-            btn = [
-                [
-                    InlineKeyboardButton(
-                        "Download", callback_data=f"yt_gen|{key}")
+                if len(i) == 1:
+                    scroll_btn = []
+                btn = [
+                    [
+                        InlineKeyboardButton(
+                            "Download", callback_data=f"yt_gen|{key}")
+                    ]
                 ]
-            ]
-            btn = InlineKeyboardMarkup(scroll_btn+btn)
+                btn = InlineKeyboardMarkup(scroll_btn+btn)
             if found_:
                 results.append(
                     InlineQueryResultPhoto(
@@ -222,6 +222,7 @@ if userge.has_bot:
                         reply_markup=btn,
                     )
                 )
+            else:
                 results.append(
                     InlineQueryResultArticle(
                         title="not found",
