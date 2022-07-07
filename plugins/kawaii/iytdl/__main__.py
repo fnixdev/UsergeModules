@@ -185,7 +185,7 @@ if userge.has_bot:
         if match is None:
             search_key = rand_key()
             YT_DB[search_key] = query
-            i = []
+            i = ""
             try:
                 i: list = (await main.VideosSearch(query=query).next())['result'][0]
             except IndexError:
