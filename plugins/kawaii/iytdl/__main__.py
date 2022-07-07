@@ -185,8 +185,9 @@ if userge.has_bot:
         if match is None:
             search_key = rand_key()
             YT_DB[search_key] = query
-            i: list = (await main.VideosSearch(query=query).next())['result'][0]
-            if len(i) == 0:
+            try:
+                i: list = (await main.VideosSearch(query=query).next())['result'][0]
+            except IndexError:
                 found_ = False
             results = []
             key = i['id']
