@@ -152,7 +152,7 @@ async def Oof_(message: Message):
         await message.try_to_edit(Oof)
 
 
-@userge.on_cmd("Hmm$", about={'header': "Hmmmmm"},
+@userge.on_cmd(r"(?:Hmm|hmm)$", about={'header': "Hmmmmm"},
                trigger='', allow_via_bot=False)
 async def Hmm_(message: Message):
     """Hmm"""
