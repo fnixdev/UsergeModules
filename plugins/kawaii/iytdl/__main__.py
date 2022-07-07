@@ -27,7 +27,7 @@ YOUTUBE_REGEX = comp_regex(
         'header': "Advanced YTDL",
         'usage': "{tr}yti URL or Query"}
 )
-async def iytdl_ub_cmd(m: Message):
+async def yti_ub_cmd(m: Message):
     reply = m.reply_to_message
     query = None
     if m.input_str:
@@ -80,16 +80,16 @@ if userge.has_bot:
         filters.create(
             lambda _, __, inline_query: (
                 inline_query.query
-                and inline_query.query.startswith("ytdl ")
+                and inline_query.query.startswith("yti ")
                 and inline_query.from_user
                 and inline_query.from_user.id in Config.OWNER_ID
             ),
-            name="YtdlInline"
+            name="YtInline"
         ),
         group=-2
     )
     async def inline_iydl(_, inline_query: InlineQuery):
-        query = inline_query.query.split("ytdl ")[1].strip()
+        query = inline_query.query.split("yti ")[1].strip()
         results = []
         link_ = get_link(query)
         id_ = get_yt_video_id(link_)
