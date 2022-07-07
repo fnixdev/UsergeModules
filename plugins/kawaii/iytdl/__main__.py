@@ -1,13 +1,11 @@
 
 import re
-import wget
 
 from iytdl import main
-from requests import get
 from uuid import uuid4
 
 from pyrogram import filters
-from pyrogram.errors import MediaEmpty, MessageIdInvalid, MessageNotModified
+from pyrogram.errors import MessageIdInvalid, MessageNotModified
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputMediaPhoto, InlineQuery, InlineQueryResultPhoto, InputMessageContent
 
 from userge import Message, config as Config, userge
@@ -165,7 +163,7 @@ if userge.has_bot:
         ),
         group=-2
     )
-    async def iytdl_inline(iq: InlineQuery):
+    async def iytdl_inline(_ ,iq: InlineQuery):
         query = iq.query.split("ytdl ", 1)[1]
         match = regex.match(query)
         if match is None:
@@ -215,7 +213,6 @@ if userge.has_bot:
             ]
         await iq.answer(results=results, is_gallery=False, is_personal=True)
         iq.stop_propagation()
-
 
 
 async def get_ytthumb(videoid: str):
