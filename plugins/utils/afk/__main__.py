@@ -66,8 +66,7 @@ async def active_afk(message: Message) -> None:
     REASON = message.input_str
     if message.reply_to_message:
         try:
-            link_ = await upload_media_tg(message)
-            LINK = f"https://telegra.ph{link_}"
+            LINK = await upload_media_tg(message)
             TIPO = link_type(LINK)
         except Exception:
             TIPO = "text"

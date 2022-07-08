@@ -65,8 +65,7 @@ async def save_media_alive(message: Message):
     replied = message.reply_to_message
     if not replied:
         return await message.err("`Reply to a photo/gif/video to set an Alive Media.`")
-    link_ = await upload_media_tg(message)
-    media = f"https://telegra.ph{link_}"
+    media = await upload_media_tg(message)
     await SAVED.update_one(
         {"_id": "ALIVE_MEDIA"}, {"$set": {"link": media}}, upsert=True
     )
