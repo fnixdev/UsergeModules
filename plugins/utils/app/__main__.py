@@ -16,6 +16,9 @@ import bs4
 from userge import userge, Message
 
 
+DEVICE_LIST = "https://raw.githubusercontent.com/androidtrackers/certified-android-devices/master/by_device.json"
+
+
 @userge.on_cmd(
     "app",
     about={
@@ -85,3 +88,33 @@ async def magisk(message: Message):
                     f'[Magisk]({data["magisk"]["link"]})|\n'
                 )
         await message.edit(releases)
+
+
+@userge.on_cmd(
+    "device",
+    about={"header": "Search device with codename",
+           "usage": "{tr}device [codename]"},
+    allow_via_bot=True,
+)
+async def device_info(message: Message):
+    target_device = message.input_str
+    if not target_device:
+        await message.err("You need insert codename")
+        return
+    try:
+        async with aiohttp.ClientSession() as ses, ses.get(DEVICE_LIST) as res:
+            getlist = res.json()
+            target_device = message.text.split()[1].lower()
+            if target_device in list(getlist):
+                device = getlist.get(target_device)
+                text = ""
+                for x in device:
+                    text += f"Brand: `{x['brand']}`\nName: `{x['name']}`\nDevice: `{x['model']}`\nCodename: `{target_device}`"
+                    text += "\n\n"
+                await message.edit(text)
+            else:
+                await message.err(f"Device {target_device} not found.")
+                return
+    except Exception:
+        await message.err("Request error")
+        return
