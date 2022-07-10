@@ -143,7 +143,7 @@ async def tagall_(message: Message):
 @userge.on_cmd("stagall", about={
     'header': "Silent tag recent 100 members with caption",
     'usage': "{tr}stagall [Text | reply to text Msg]"},
-    allow_private=False, allow_via_bot=False, only_admins=True)
+    allow_private=False, allow_via_bot=False, only_admins=False)
 async def stagall_(message: Message):
     """ tag recent members without spam """
     chat_id = message.chat.id
