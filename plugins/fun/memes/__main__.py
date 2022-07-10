@@ -156,10 +156,16 @@ async def Oof_(message: Message):
                trigger='', allow_via_bot=False)
 async def Hmm_(message: Message):
     """Hmm"""
-    Hmm = "Hm "
-    for _ in range(4):
-        Hmm = Hmm[:-1] + "mm"
-        await message.try_to_edit(Hmm)
+    if "hmm" in message.text:
+        Hmm = "hm "
+        for _ in range(4):
+            Hmm = Hmm[:-1] + "mm"
+            await message.try_to_edit(Hmm)
+    else:
+        Hmm = "Hm "
+        for _ in range(4):
+            Hmm = Hmm[:-1] + "mm"
+            await message.try_to_edit(Hmm)
 
 
 async def check_and_send(message: Message, *args, **kwargs):

@@ -97,14 +97,14 @@ async def magisk(message: Message):
     allow_via_bot=True,
 )
 async def device_info(message: Message):
-    target_device = message.input_str
+    query = message.input_str
     if not target_device:
         await message.err("You need insert codename")
         return
     try:
         async with aiohttp.ClientSession() as ses, ses.get(DEVICE_LIST) as res:
-            getlist = res.json()
-            target_device = message.text.split()[1].lower()
+            getlist = await res.json(content_type="text/plain")
+            target_device = query.lower()
             if target_device in list(getlist):
                 device = getlist.get(target_device)
                 text = ""
