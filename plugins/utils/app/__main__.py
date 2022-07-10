@@ -98,7 +98,7 @@ async def magisk(message: Message):
 )
 async def device_info(message: Message):
     query = message.input_str
-    if not target_device:
+    if not query:
         await message.err("You need insert codename")
         return
     try:
