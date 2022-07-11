@@ -5,3 +5,7 @@
 # ==
 
 """ federation utils """
+
+import os
+
+FBAN_LOG_CHANNEL = os.environ.get("FBAN_LOG_CHANNEL")
