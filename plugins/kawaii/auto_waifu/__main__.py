@@ -16,15 +16,8 @@ from bs4 import BeautifulSoup
 from userge import userge, Message, filters, config, get_collection
 
 BASE_URL = "http://www.google.com"
-temp_folder = config.Dynamic.DOWN_PATH
-
-headers = {
-    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:58.0) Gecko/20100101 Firefox/58.0"
-}
-
 IS_ENABLED = False
 IS_ENABLED_FILTER = filters.create(lambda _, __, ___: IS_ENABLED)
-
 USER_DATA = get_collection("CONFIGS")
 CHANNEL = userge.getCLogger(__name__)
 
@@ -59,9 +52,9 @@ async def auto_waifu(msg: Message):
 
 @userge.on_filters(IS_ENABLED_FILTER & filters.group & filters.photo & filters.incoming
                    & filters.user([
-                                1733263647, # @Collect_yours_waifus_bot
-                                792028928 # @loli_harem_bot
-                                ]),  # Bot IDs
+                       1733263647,  # @Collect_yours_waifus_bot
+                       792028928  # @loli_harem_bot
+                   ]),  # Bot IDs
                    group=-1, allow_via_bot=False)
 async def waifu_handler(msg: Message):
     img = await msg.download(config.Dynamic.DOWN_PATH)
@@ -73,6 +66,7 @@ async def waifu_handler(msg: Message):
             search_url, files=multipart, allow_redirects=False
         )
         the_location = google_rs_response.headers.get("Location")
+        headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:58.0) Gecko/20100101 Firefox/58.0"}
         response = requests.get(the_location, headers=headers)
         os.remove(img)
         soup = BeautifulSoup(response.text, "html.parser")
@@ -80,7 +74,7 @@ async def waifu_handler(msg: Message):
         prs_anchor_element = prs_div.find("a")
         prs_text = prs_anchor_element.text
         out_str = f"/protecc {prs_text}"
-        await msg.reply_text(out_str)
-        await CHANNEL.log(f'Auto Waifu Responded in {msg.chat.title} [{msg.chat.id}]\n f"[View Message](https://t.me/c/{str(msg.chat.id)[4:]}/{msg.id})')
+        await msg.reply(out_str)
+        await CHANNEL.log(f"A Waifu appeared in [{msg.chat.title}](https://t.me/c/{str(msg.chat.id)[4:]}/{msg.id})\n\nResponse: {out_str}")
     except Exception as e_x:  # pylint: disable=broad-except
         await CHANNEL.log(str(e_x))
