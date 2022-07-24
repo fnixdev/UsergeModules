@@ -59,9 +59,9 @@ async def save_media_alive(message: Message):
     found = await SAVED.find_one({"_id": "ALIVE_MEDIA"})
     if "-r" in message.flags:
         if not found:
-            return await message.edit("`no media has been defined yet.`", del_in=5)
+            return await message.edit("`No media has been defined yet.`", del_in=5)
         await SAVED.delete_one({"_id": "ALIVE_MEDIA"})
-        return await message.edit("`alive media reseted.`", del_in=5)
+        return await message.edit("`Alive media set to default.`", del_in=5)
     replied = message.reply_to_message
     if not replied:
         return await message.err("`Reply to a photo/gif/video to set an Alive Media.`")
@@ -214,7 +214,7 @@ class Bot_Alive:
 ALIVE_DEFAULT = [
     "https://telegra.ph/file/e9ee28f638a94725e17d9.gif",
     "https://telegra.ph/file/d50793d9b5b1efaff09dc.gif",
-    "https://telegra.ph/file/fdb15844c42e0c0965375.mp4"
+    "https://telegra.ph/file/fdb15844c42e0c0965375.gif"
 ]
 
 FRASES = (

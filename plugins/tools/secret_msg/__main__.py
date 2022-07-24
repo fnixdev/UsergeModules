@@ -142,7 +142,7 @@ async def inline_answer(_, inline_query: InlineQuery):
             title=f"A Private Msg to {user.first_name}",
             input_message_content=InputTextMessageContent(msg_c),
             description="Only he/she can open it",
-            thumb_url="https://te.legra.ph/file/16133ab3297b3f73c8da5.png",
+            thumb_url="https://telegra.ph/file/aa2776cc8f104120d2e4a.jpg",
             reply_markup=InlineKeyboardMarkup(prvte_msg)
         )
     ]

@@ -14,6 +14,8 @@ from yt_dlp import YoutubeDL
 from re import compile as comp_regex
 from youtubesearchpython import SearchVideos
 
+from pyrogram.enums import ChatAction
+
 from userge import userge, Message
 
 BASE_YT_URL = "https://www.youtube.com/watch?v="
@@ -35,19 +37,19 @@ with tempfile.TemporaryDirectory() as tempdir:
     "song",
     about={
         "header": "Music Downloader",
-        "description": "Baixe músicas usando o yt_dlp",
+        "description": "Download songs using yt_dlp",
         'examples': ['{tr}song link',
-                     '{tr}song nome da musica',]
+                     '{tr}song music name',]
         }
     )
 async def song_(message: Message):
     """Download Songs With YTDL"""
     query = message.input_str
     if not query:
-        return await message.edit("`Vou baixar o vento?!`", del_in=5)
-    await message.edit("`Aguarde ...`")
+        return await message.err("`Need query !`", del_in=5)
+    await message.edit("`Pls Wait ...`")
     link = await get_link(query)
-    await message.edit("`Processando o audio ...`")
+    await message.edit("`Processing song...`")
     aud_opts = {
         "outtmpl": os.path.join(path_, "%(title)s.%(ext)s"),
         "logger": LOGGER,
@@ -74,9 +76,10 @@ async def song_(message: Message):
             if not _path.lower().endswith((".jpg", ".png", ".webp")):
                 _fpath = _path
         if not _fpath:
-            await message.err("nothing found !")
+            await message.err("Nothing found !")
             return
         await message.delete()
+        await message.reply_chat_action(ChatAction.UPLOAD_AUDIO)
         await message.reply_audio(audio=Path(_fpath), caption=capt_, duration=duration_)
         os.remove(Path(_fpath))
     else:
@@ -87,17 +90,17 @@ async def song_(message: Message):
     "video",
     about={
         "header": "Video Downloader",
-        "description": "Baixe videos usando o yt_dlp",
+        "description": "Download videos using yt_dlp",
         'examples': ['{tr}video link',
-                     '{tr}video nome do video',]
+                     '{tr}video video name',]
         }
     )
 async def vid_(message: Message):
     """Download Videos With YTDL"""
     query = message.input_str
     if not query:
-        return await message.edit("`Vou baixar o vento?!`", del_in=5)
-    await message.edit("`Aguarde ...`")
+        return await message.err("`Need query`", del_in=5)
+    await message.edit("`Pls wait...`")
     vid_opts = {
         "outtmpl": os.path.join(path_, "%(title)s.%(ext)s"),
         'logger': LOGGER,
@@ -112,7 +115,7 @@ async def vid_(message: Message):
         "quiet": True,
     }
     link = await get_link(query)
-    await message.edit("`Processando o video ...`")
+    await message.edit("`Processing video...`")
     filename_, capt_, duration_ = extract_inf(link, vid_opts)
     if filename_ == 0:
         _fpath = ''
@@ -120,8 +123,9 @@ async def vid_(message: Message):
             if not _path.lower().endswith((".jpg", ".png", ".webp")):
                 _fpath = _path
         if not _fpath:
-            return await message.err("nothing found !")
+            return await message.err("Nothing found !")
         await message.delete()
+        await message.reply_chat_action(ChatAction.UPLOAD_VIDEO)
         await message.reply_video(video=Path(_fpath), caption=capt_, duration=duration_)
         os.remove(Path(_fpath))
     else:

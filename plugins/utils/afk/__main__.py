@@ -1,6 +1,6 @@
 """ setup AFK mode """
 
-## == Modules Userge by fnix
+# == Modules Userge by fnix
 #
 # = All copyrights to UsergeTeam
 #
@@ -50,7 +50,8 @@ async def _init() -> None:
         LINK = data["link"]
         TIME = data['time'] if 'time' in data else 0
     async for _user in AFK_COLLECTION.find():
-        USERS.update({_user['_id']:  [_user['pcount'], _user['gcount'], _user['men']]})
+        USERS.update(
+            {_user['_id']:  [_user['pcount'], _user['gcount'], _user['men']]})
 
 
 @userge.on_cmd("afk", about={
@@ -78,7 +79,8 @@ async def active_afk(message: Message) -> None:
         AFK_COLLECTION.drop(),
         SAVED_SETTINGS.update_one(
             {"_id": "AFK"},
-            {"$set": {"on": True, "data": REASON, "time": TIME, "tipo": TIPO, "link": LINK}},
+            {"$set": {"on": True, "data": REASON,
+                      "time": TIME, "tipo": TIPO, "link": LINK}},
             upsert=True,
         ),
     )
@@ -98,8 +100,9 @@ async def handle_afk_incomming(message: Message) -> None:
         if not (USERS[user_id][0] + USERS[user_id][1]) % randint(2, 4):
             if REASON:
                 out_str = (
-                    f"▸ Oi, estou ausente a {afk_time}.\n"
-                    f"▸ Motivo: <i>{REASON}</i>"
+                    f"<b>I'm currently AFK.</b>\n"
+                    f"- <b>Reason</b>: <code>{REASON}</code>\n"
+                    f"- <b>Last seen:</b> <code>{afk_time} ago</code>"
                 )
             else:
                 out_str = choice(AFK_REASONS)
@@ -116,8 +119,9 @@ async def handle_afk_incomming(message: Message) -> None:
     else:
         if REASON:
             out_str = (
-                f"▸ Oi, estou ausente a {afk_time}.\n"
-                f"▸ Motivo: <i>{REASON}</i>"
+                f"<b>I'm currently AFK.</b>\n"
+                f"- <b>Reason</b>: <code>{REASON}</code>\n"
+                f"- <b>Last seen:</b> <code>{afk_time} ago</code>"
             )
         else:
             afkout = choice(AFK_REASONS)
@@ -203,20 +207,31 @@ def link_type(link):
 
 
 AFK_REASONS = (
-    "Agora estou ocupado. Por favor, fale em uma bolsa e quando eu voltar você pode apenas me dar a bolsa!",
-    "Estou fora agora. Se precisar de alguma coisa, deixe mensagem após o beep:\n`beeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeep`!",
-    "Volto em alguns minutos e se não ..,\nespere mais um pouco.",
-    "Não estou aqui agora, então provavelmente estou em outro lugar.",
-    "Sei que quer falar comigo, mas estou ocupado salvando o mundo agora.",
-    "Às vezes, vale a pena esperar pelas melhores coisas da vida…\nEstou ausente então espere por mim.",
-    "Olá, seja bem-vindo à minha mensagem de ausência, como posso ignorá-lo hoje?",
-    "Estou mais longe que 7 mares e 7 países,\n7 águas e 7 continentes,\n7 montanhas e 7 colinas,\n7 planícies e 7 montes,\n7 piscinas e 7 lagos,\n7 nascentes e 7 prados,\n7 cidades e 7 bairros,\n7 quadras e 7 casas...\n\nOnde nem mesmo suas mensagens podem me alcançar!",
-    "Estou ausente no momento, mas se você gritar alto o suficiente na tela, talvez eu possa ouvir você.",
-    "Por favor, deixe uma mensagem e me faça sentir ainda mais importante do que já sou.",
-    "Eu não estou aqui então pare de escrever para mim,\nou então você se verá com uma tela cheia de suas próprias mensagens.",
-    "Se eu estivesse aqui,\nEu te diria onde estou.\n\nMas eu não estou,\nentão me pergunte quando eu voltar...",
-    "Não estou disponível agora, por favor, deixe seu nome, número e endereço e eu irei persegui-lo mais tarde. ",
-    "Desculpe, eu não estou aqui agora.\nSinta-se à vontade para falar com meu userbot pelo tempo que desejar.\nEu respondo mais tarde.",
-    "A vida é tão curta, há tantas coisas para fazer ...\nEstou ausente fazendo uma delas ..",
-    "Eu não estou aqui agora ...\nmas se estivesse...\n\nisso não seria incrível?",
-)
+    "I'm busy right now. Please talk in a bag and when I come back you can just give me the bag!",
+    "I'm away right now. If you need anything, leave a message after the beep: \
+`beeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeep!`",
+    "You missed me, next time aim better.",
+    "I'll be back in a few minutes and if I'm not...,\nwait longer.",
+    "I'm not here right now, so I'm probably somewhere else.",
+    "Roses are red,\nViolets are blue,\nLeave me a message,\nAnd I'll get back to you.",
+    "Sometimes the best things in life are worth waiting for…\nI'll be right back.",
+    "I'll be right back,\nbut if I'm not right back,\nI'll be back later.",
+    "If you haven't figured it out already,\nI'm not here.",
+    "I'm away over 7 seas and 7 countries,\n7 waters and 7 continents,\n7 mountains and 7 hills,\
+7 plains and 7 mounds,\n7 pools and 7 lakes,\n7 springs and 7 meadows,\
+7 cities and 7 neighborhoods,\n7 blocks and 7 houses...\
+    Where not even your messages can reach me!",
+    "I'm away from the keyboard at the moment, but if you'll scream loud enough at your screen,\
+    I might just hear you.",
+    "I went that way\n>>>>>",
+    "I went this way\n<<<<<",
+    "Please leave a message and make me feel even more important than I already am.",
+    "If I were here,\nI'd tell you where I am.\n\nBut I'm not,\nso ask me when I return...",
+    "I am away!\nI don't know when I'll be back!\nHopefully a few minutes from now!",
+    "I'm not available right now so please leave your name, number, \
+    and address and I will stalk you later. :P",
+    "Sorry, I'm not here right now.\nFeel free to talk to my userbot as long as you like.\
+I'll get back to you later.",
+    "I bet you were expecting an away message!",
+    "Life is so short, there are so many things to do...\nI'm away doing one of them..",
+    "I am not here right now...\nbut if I was...\n\nwouldn't that be awesome?")

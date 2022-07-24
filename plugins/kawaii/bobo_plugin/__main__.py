@@ -14,8 +14,8 @@ from userge import Message, userge
     "d",
     about={
         "header": "Device description",
-        "description": "Obtenha todos os dados de um dispositivo.",
-        "usage": "{tr}d [dispositivo]",
+        "description": "Get details from device.",
+        "usage": "{tr}d [device]",
     },
 )
 async def ln_user_(message: Message):
@@ -26,7 +26,7 @@ async def ln_user_(message: Message):
         try:
             await conv.send_message(f"!d {device_}")
         except YouBlockedUser:
-            await message.err("Desbloqueie @vegadata_bot primeiro...", del_in=5)
+            await message.err("Unblock @vegadata_bot first...", del_in=5)
             return
         response = await conv.get_response(mark_read=True)
     await message.edit(response.text)
