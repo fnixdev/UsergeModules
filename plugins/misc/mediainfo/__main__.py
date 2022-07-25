@@ -19,7 +19,7 @@ async def mediainfo(message: Message):
     if not reply:
         await message.err("reply to media first", del_in=5)
         return
-    process = await message.edit("`Processing ...`")
+    await message.edit("`Processing ...`")
     x_media = None
     available_media = (
         "audio",
