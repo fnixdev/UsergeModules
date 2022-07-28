@@ -21,7 +21,7 @@ from userge.utils import deEmojify, rand_array
     },
 )
 async def anime_Scene(message: Message):
-    """Creates random anime Cut Scene!"""
+    """ Creates random anime Cut Scene! """
 
     monika_faces = list("abcdefghijklmnopqr")
 
@@ -118,7 +118,7 @@ async def anime_Scene(message: Message):
     if path == "ERROR":
         return await message.edit("😔 Something Wrong see Help!", del_in=2)
     chat_id = message.chat.id
-    message_id = replied.message_id if replied else None
+    message_id = replied.id if replied else None
     await message.delete()
     await message.client.send_photo(
         chat_id=chat_id, photo=path, reply_to_message_id=message_id

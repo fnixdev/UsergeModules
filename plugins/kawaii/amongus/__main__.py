@@ -1,11 +1,10 @@
-"""Create Cool Among US Stickers"""
-
 ## == Modules Userge by fnix
 #
 # = All copyrights to UsergeTeam
 #
 # ==
 
+"""Create Cool Among US Stickers"""
 
 import os
 from io import BytesIO
@@ -45,7 +44,7 @@ CLRS = {
     },
 )
 async def among_us(message: Message):
-    """among us sticker"""
+    """ among us sticker """
     reply = message.reply_to_message
     args = message.filtered_input_str
     if args:
@@ -67,7 +66,7 @@ async def among_us(message: Message):
     else:
         color = randint(1, 12)
     stickerx = await amongus_gen(text, color)
-    reply_id = reply.message_id if reply else None
+    reply_id = reply.id if reply else None
     await message.client.send_sticker(
         message.chat.id, sticker=stickerx, reply_to_message_id=reply_id
     )

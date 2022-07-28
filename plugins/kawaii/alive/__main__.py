@@ -30,6 +30,7 @@ SAVED = get_collection("ALIVE_DB")
 
 @userge.on_cmd("alive", about={"header": "Just For Fun"}, allow_channels=False)
 async def alive_inline(message: Message):
+    """ just alive for fun """
     try:
         if message.client.is_bot:
             await send_alive_message(message)
@@ -55,7 +56,7 @@ async def alive_inline(message: Message):
     },
 )
 async def save_media_alive(message: Message):
-    """set media alive"""
+    """ set media alive """
     found = await SAVED.find_one({"_id": "ALIVE_MEDIA"})
     if "-r" in message.flags:
         if not found:

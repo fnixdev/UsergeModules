@@ -4,6 +4,7 @@
 #
 # ==
 
+""" neofetch module """
 import os
 from io import BytesIO
 
@@ -26,9 +27,10 @@ from userge.utils import runcmd
     },
 )
 async def neofetch_(message: Message):
+    """ show system info """
     await message.edit("Getting System Info ...")
     reply = message.reply_to_message
-    reply_id = reply.message_id if reply else None
+    reply_id = reply.id if reply else None
     system = os.name
     if system == "posix":
         if "-img" in message.flags:
