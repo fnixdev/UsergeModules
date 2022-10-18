@@ -61,7 +61,7 @@ class _BaseLib:
     def progress(self) -> str:
         """ Returns progress """
         percentage = self.percentage
-        return "[{}{}]".format(
+        return "[{}{}]".format( # pylint: disable=consider-using-f-string
             ''.join((config.FINISHED_PROGRESS_STR
                      for _ in range(floor(percentage / 5)))),
             ''.join((config.UNFINISHED_PROGRESS_STR

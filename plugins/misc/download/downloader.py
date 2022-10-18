@@ -89,7 +89,7 @@ async def url_download(message: Message, url: str) -> Tuple[str, int]:
             estimated_total_time = downloader.get_eta(human=True)
             progress_str = \
                 "__{}__\n" + \
-                "```[{}{}]```\n" + \
+                "```\n[{}{}]```\n" + \
                 "**Progress** : `{}%`\n" + \
                 "**URL** : `{}`\n" + \
                 "**FILENAME** : `{}`\n" + \
