@@ -1,10 +1,12 @@
 """ see all group and channels """
 
-## == Modules Userge by fnix
+# Copyright (C) 2020-2022 by UsergeTeam@Github, < https://github.com/UsergeTeam >.
 #
-# = All copyrights to UsergeTeam
+# This file is part of < https://github.com/UsergeTeam/Userge > project,
+# and is released under the "GNU v3.0 License Agreement".
+# Please see < https://github.com/UsergeTeam/Userge/blob/master/LICENSE >
 #
-# ==
+# All rights reserved.
 
 
 from pyrogram.errors import UserNotParticipant, ChannelPrivate
@@ -111,11 +113,11 @@ async def stats(message: Message):
                 a_chat += 1
         elif dialog.chat.type == enums.ChatType.CHANNEL:
             c += 1
-    await message.edit('''
+    await message.edit(f'''
 You have `{u}` Private Messages.
 You are in `{g}` Groups.
 You are in `{sg}` Super Groups.
 You Are in `{c}` Channels.
 You Are Admin in `{a_chat}` Chats.
 Bots Started = `{b}`
-'''.format(u, g, sg, c, a_chat, b))
+''')

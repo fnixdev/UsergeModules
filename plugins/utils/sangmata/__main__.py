@@ -27,10 +27,10 @@ async def sangmata_(message: Message):
         await message.err("```Reply to get Name and Username History...```", del_in=5)
         return
     user = replied.from_user.id
-    chat = "@Sangmatainfo_bot"
+    chat = "@SangMata_bot"
     await message.edit("```Getting info, Wait plox ...```")
     msgs = []
-    ERROR_MSG = "For your kind information, you blocked @Sangmatainfo_bot, Unblock it"
+    ERROR_MSG = "For your kind information, you blocked @SangMata_bot, Unblock it"
     try:
         async with userge.conversation(chat) as conv:
             try:
